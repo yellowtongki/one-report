@@ -1,0 +1,2446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>ONE REPORT - 루멘수학</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" async></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0d2240;
+  --navy2:#162e52;
+  --navy3:#1e3d6e;
+  --blue:#1d6fe8;
+  --blue2:#3b84f7;
+  --blue3:#dbeafe;
+  --blue4:#eff6ff;
+  --green:#059669;
+  --green2:#ecfdf5;
+  --green3:#a7f3d0;
+  --red:#dc2626;
+  --red2:#fef2f2;
+  --red3:#fecaca;
+  --purple:#7c3aed;
+  --purple2:#f5f3ff;
+  --amber:#d97706;
+  --amber2:#fffbeb;
+  --gold:#b5893a;
+  --gold2:#fdf6e3;
+  --bg:#eef2f8;
+  --surface:#ffffff;
+  --border:#e2e8f0;
+  --border2:#cbd5e1;
+  --text:#0f172a;
+  --text2:#475569;
+  --text3:#94a3b8;
+  --r:12px;
+  --rl:16px;
+  --shadow:0 1px 4px rgba(15,34,64,0.06),0 4px 16px rgba(15,34,64,0.08);
+  --shadow-hover:0 4px 12px rgba(15,34,64,0.1),0 12px 32px rgba(15,34,64,0.12);
+  --shadow-card:0 1px 3px rgba(15,34,64,0.05),0 2px 8px rgba(15,34,64,0.06);
+}
+body{
+  background:var(--bg);
+  font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  padding:16px;
+}
+.app{
+  width:100%;
+  max-width:560px;
+  background:var(--surface);
+  border-radius:20px;
+  box-shadow:0 8px 40px rgba(13,34,64,0.14),0 2px 8px rgba(13,34,64,0.08);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  min-height:calc(100vh - 32px);
+}
+.hdr{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 60%,var(--navy3) 100%);
+  padding:14px 18px;
+  color:white;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-shrink:0;
+  position:relative;
+  overflow:hidden;
+}
+.hdr::before{
+  content:'';
+  position:absolute;
+  top:-30px;right:-20px;
+  width:120px;height:120px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.04);
+  pointer-events:none;
+}
+.hdr::after{
+  content:'';
+  position:absolute;
+  bottom:-40px;right:60px;
+  width:80px;height:80px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.03);
+  pointer-events:none;
+}
+.content{flex:1;overflow-y:auto}
+.nav{
+  display:flex;
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+  background:white;
+  padding:4px 6px;
+  gap:2px;
+}
+.nb{
+  flex:1;
+  padding:8px 2px;
+  border:none;
+  cursor:pointer;
+  background:transparent;
+  color:var(--text3);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:1px;
+  font-size:9px;
+  font-weight:700;
+  font-family:inherit;
+  border-radius:10px;
+  transition:all 0.18s;
+  letter-spacing:0.2px;
+}
+.nb.on{
+  background:#eff6ff;
+  color:var(--blue);
+}
+.nb:hover:not(.on){background:#f8fafc;color:var(--text2)}
+.nb-icon{font-size:17px}
+
+/* ── 데스크탑 2단 레이아웃 ── */
+@media(min-width:900px){
+  body{padding:20px;align-items:flex-start;height:100vh;overflow:hidden}
+  .app{max-width:100%;flex-direction:row;height:calc(100vh - 40px);min-height:unset;border-radius:24px;overflow:hidden}
+  .left-panel{width:340px;min-width:340px;border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%;overflow:hidden}
+  .left-panel .hdr{border-radius:0;flex-shrink:0}
+  .left-panel .content{flex:1;overflow-y:auto}
+  .left-panel .nav{display:none}
+  .right-panel{flex:1;display:flex;flex-direction:column;height:100%;overflow:hidden;background:#fafbfd}
+  .right-panel .hdr{background:linear-gradient(135deg,#122040 0%,#1a3260 100%);flex-shrink:0}
+  .right-panel .content{flex:1;overflow-y:auto}
+  .right-panel .nav{border-top:1px solid var(--border);flex-shrink:0}
+  .desktop-sidenav{display:flex;flex-direction:column;gap:4px;padding:12px 10px;border-right:1px solid var(--border);background:white;width:56px;flex-shrink:0}
+  .desktop-sidenav .nb{flex:0;padding:10px 4px;border-radius:10px;font-size:8px}
+  .desktop-sidenav .nb.on{background:#eff6ff}
+  .mobile-nav{display:none}
+}
+@media(max-width:899px){
+  .left-panel,.right-panel,.desktop-sidenav{display:contents}
+  .mobile-nav{display:flex}
+}
+
+/* 탭바 */
+.tbar{
+  display:flex;
+  gap:4px;
+  padding:10px 12px;
+  overflow-x:auto;
+  border-bottom:1px solid var(--border);
+  background:#fafbfd;
+}
+.tbar::-webkit-scrollbar{display:none}
+.tb{
+  padding:7px 13px;
+  border-radius:20px;
+  border:none;
+  cursor:pointer;
+  font-size:11.5px;
+  font-weight:700;
+  white-space:nowrap;
+  background:#f1f5f9;
+  color:var(--text2);
+  font-family:inherit;
+  transition:all 0.15s;
+  letter-spacing:0.1px;
+}
+.tb:hover:not(.on){background:#e8edf5;color:var(--text)}
+.tb.on{background:var(--blue);color:white;box-shadow:0 2px 8px rgba(29,111,232,0.3)}
+
+/* 폼 */
+.fb{padding:16px}
+.st{
+  font-size:11px;
+  font-weight:800;
+  color:var(--navy);
+  margin-bottom:12px;
+  padding-bottom:7px;
+  border-bottom:2px solid #dbeafe;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.f{margin-bottom:10px}
+.f label{
+  display:block;
+  font-size:11px;
+  color:var(--text2);
+  margin-bottom:4px;
+  font-weight:600;
+  letter-spacing:0.3px;
+}
+.f input,.f select,.f textarea{
+  width:100%;
+  border:1.5px solid var(--border);
+  border-radius:var(--r);
+  padding:9px 12px;
+  font-size:13px;
+  background:white;
+  color:var(--text);
+  font-family:inherit;
+  outline:none;
+  transition:border-color 0.15s, box-shadow 0.15s;
+}
+.f input:focus,.f select:focus,.f textarea:focus{
+  border-color:var(--blue2);
+  box-shadow:0 0 0 3px rgba(59,132,247,0.12);
+}
+.f textarea{min-height:150px;resize:vertical;line-height:1.75}
+.uc{background:var(--bg);border-radius:var(--r);padding:12px;margin-bottom:10px}
+.ibox{
+  background:#eff6ff;
+  border-radius:var(--r);
+  padding:9px 12px;
+  margin-bottom:10px;
+  font-size:11px;
+  color:#1d4ed8;
+  border-left:3px solid var(--blue2);
+}
+.wbox{
+  background:#fffbeb;
+  border-radius:var(--r);
+  padding:9px 12px;
+  margin-bottom:10px;
+  font-size:11px;
+  color:#92400e;
+  border-left:3px solid #f59e0b;
+}
+.btns{display:flex;gap:8px;margin-top:16px}
+.pbtn{
+  flex:1;
+  padding:13px;
+  background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%);
+  color:white;
+  border:none;
+  border-radius:var(--r);
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  font-family:inherit;
+  box-shadow:0 2px 8px rgba(29,111,232,0.3);
+  transition:all 0.15s;
+  letter-spacing:0.2px;
+}
+.pbtn:hover{box-shadow:0 4px 16px rgba(29,111,232,0.4);transform:translateY(-1px)}
+.obtn{
+  flex:1;
+  padding:13px;
+  background:transparent;
+  color:var(--blue);
+  border:1.5px solid var(--blue);
+  border-radius:var(--r);
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  font-family:inherit;
+  transition:all 0.15s;
+}
+.obtn:hover{background:#eff6ff}
+.gbtn{
+  flex:1;
+  padding:13px;
+  background:linear-gradient(135deg,#059669 0%,#10b981 100%);
+  color:white;
+  border:none;
+  border-radius:var(--r);
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  font-family:inherit;
+  box-shadow:0 2px 8px rgba(5,150,105,0.3);
+}
+.aibtn{
+  width:100%;
+  padding:12px;
+  background:linear-gradient(135deg,#6d28d9 0%,#7c3aed 100%);
+  color:white;
+  border:none;
+  border-radius:var(--r);
+  font-size:13px;
+  cursor:pointer;
+  margin-bottom:10px;
+  font-family:inherit;
+  font-weight:700;
+  box-shadow:0 2px 8px rgba(124,58,237,0.3);
+  letter-spacing:0.2px;
+}
+.ai-ing{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:11px 13px;
+  background:var(--purple2);
+  border-radius:var(--r);
+  margin-bottom:10px;
+  font-size:12px;
+  color:var(--purple);
+  border-left:3px solid var(--purple);
+}
+.lcard{
+  background:white;
+  border:1.5px solid var(--border);
+  border-radius:var(--rl);
+  padding:13px 14px;
+  margin-bottom:10px;
+  cursor:pointer;
+  transition:all 0.18s;
+  box-shadow:var(--shadow-card);
+}
+.lcard:hover{border-color:var(--blue2);box-shadow:var(--shadow-hover);transform:translateY(-1px)}
+.badge{
+  display:inline-block;
+  font-size:10px;
+  font-weight:700;
+  padding:2px 8px;
+  border-radius:20px;
+  letter-spacing:0.1px;
+}
+.pvbanner{
+  background:linear-gradient(135deg,#fffbeb,#fef3c7);
+  padding:9px 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:12px;
+  color:#92400e;
+  flex-shrink:0;
+  border-bottom:1px solid #fde68a;
+}
+.save-msg{
+  font-size:11px;
+  background:rgba(255,255,255,0.18);
+  padding:3px 10px;
+  border-radius:20px;
+  font-weight:600;
+}
+.toggle{
+  width:44px;height:25px;
+  border-radius:13px;border:none;cursor:pointer;
+  position:relative;transition:background 0.2s;flex-shrink:0;
+}
+.toggle::after{
+  content:'';position:absolute;
+  width:19px;height:19px;
+  border-radius:50%;background:white;top:3px;
+  transition:left 0.2s;
+  box-shadow:0 1px 4px rgba(0,0,0,0.18);
+  pointer-events:none;
+}
+.toggle.on{background:var(--blue2)}
+.toggle.on::after{left:22px}
+.toggle.off{background:#cbd5e1}
+.toggle.off::after{left:3px}
+.hw-row{display:flex;align-items:center;gap:7px;padding:9px 0;border-bottom:1px solid #f1f5f9}
+.hw-row:last-child{border-bottom:none}
+.hw-date{
+  font-size:11px;color:var(--text2);
+  border:1.5px solid var(--border);border-radius:8px;
+  padding:4px 7px;background:white;
+  width:68px;outline:none;font-family:inherit;flex-shrink:0;
+}
+.ss{
+  padding:4px 9px;border-radius:20px;border:none;
+  font-size:11px;font-weight:700;cursor:pointer;
+  outline:none;flex-shrink:0;font-family:inherit;min-width:78px;
+}
+.ps{
+  padding:4px 9px;border-radius:20px;border:none;
+  font-size:11px;font-weight:700;cursor:pointer;
+  outline:none;flex-shrink:0;font-family:inherit;min-width:54px;text-align:center;
+}
+.bar-bg{flex:1;height:8px;background:#f1f5f9;border-radius:99px;overflow:hidden}
+.bar-fg{height:100%;border-radius:99px;transition:width 0.3s}
+.prog-box{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:var(--rl);
+  padding:18px;
+  margin:14px;
+  box-shadow:var(--shadow-card);
+}
+.prog-bar-wrap{height:8px;background:#e0f2fe;border-radius:99px;overflow:hidden;margin:8px 0}
+.prog-bar-fill{height:100%;background:var(--blue2);border-radius:99px;transition:width 0.4s}
+.prog-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border)}
+.prog-item:last-child{border-bottom:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 0.8s linear infinite}
+.api-banner{background:#fffbeb;border-bottom:1px solid #fde68a;padding:10px 14px}
+.api-ok{background:#f0fdf4;border-bottom:1px solid #d1fae5;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--green)}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── 왼쪽 패널: 목록 (데스크탑 전용 고정) ── -->
+  <div class="left-panel">
+    <div class="hdr" style="flex-shrink:0">
+      <div>
+        <div style="font-size:9.5px;opacity:0.6;letter-spacing:1.2px;font-weight:600;text-transform:uppercase;margin-bottom:2px">🏫 루멘수학</div>
+        <div style="font-size:17px;font-weight:800;letter-spacing:-0.3px">ONE REPORT</div>
+      </div>
+    </div>
+    <div id="API_BANNER"></div>
+    <div class="content" id="LIST_CONTENT" style="flex:1;overflow-y:auto"></div>
+  </div>
+
+  <!-- ── 오른쪽 패널: 편집/미리보기/공유/설정 ── -->
+  <div class="right-panel">
+    <div class="hdr" style="flex-shrink:0">
+      <div>
+        <div style="font-size:9.5px;opacity:0.6;letter-spacing:1px;font-weight:600;text-transform:uppercase;margin-bottom:2px">편집 · 미리보기 · 공유</div>
+        <div style="font-size:16px;font-weight:800;letter-spacing:-0.2px" id="RIGHT_TITLE">학생을 선택해주세요</div>
+      </div>
+      <div id="HDR_R"></div>
+    </div>
+    <div class="content" id="CONTENT" style="flex:1;overflow-y:auto"></div>
+    <div class="nav" style="flex-shrink:0">
+      <button class="nb on" id="nb-form" onclick="go('form')"><span class="nb-icon">✏️</span>입력</button>
+      <button class="nb" id="nb-preview" onclick="go('preview')"><span class="nb-icon">👁</span>미리보기</button>
+      <button class="nb" id="nb-share" onclick="go('share')"><span class="nb-icon">📤</span>공유</button>
+      <button class="nb" id="nb-bulk" onclick="go('bulk')"><span class="nb-icon">✨</span>일괄</button>
+      <button class="nb" id="nb-settings" onclick="go('settings')"><span class="nb-icon">⚙️</span>설정</button>
+    </div>
+  </div>
+
+  <!-- ── 모바일 전용: 하단 고정 네비 ── -->
+  <div class="mobile-nav" style="position:fixed;bottom:0;left:0;right:0;border-top:1px solid #e8edf5;background:white;z-index:100;padding:4px 6px calc(4px + env(safe-area-inset-bottom)) 6px;gap:2px;box-shadow:0 -4px 16px rgba(13,34,64,0.08)">
+    <button class="nb on" id="nb-list-m" onclick="goMobile('list')"><span class="nb-icon">📋</span>목록</button>
+    <button class="nb" id="nb-form-m" onclick="goMobile('form')"><span class="nb-icon">✏️</span>입력</button>
+    <button class="nb" id="nb-preview-m" onclick="goMobile('preview')"><span class="nb-icon">👁</span>미리보기</button>
+    <button class="nb" id="nb-bulk-m" onclick="goMobile('bulk')"><span class="nb-icon">✨</span>일괄</button>
+    <button class="nb" id="nb-settings-m" onclick="goMobile('settings')"><span class="nb-icon">⚙️</span>설정</button>
+  </div>
+</div>
+
+<script>
+/* ── 상수 ── */
+const SS={풀이:{bg:'#dbeafe',text:'#1d4ed8',bar:'#3b82f6'},채점:{bg:'#fef9c3',text:'#92400e',bar:'#f59e0b'},오답:{bg:'#dcfce7',text:'#15803d',bar:'#22c55e'},아하노트:{bg:'#f3e8ff',text:'#7c3aed',bar:'#a855f7'},없음:{bg:'#f1f5f9',text:'#94a3b8',bar:'#e2e8f0'}};
+const PS={100:{bg:'#dcfce7',text:'#15803d'},60:{bg:'#fef9c3',text:'#92400e'},30:{bg:'#dbeafe',text:'#1d4ed8'},0:{bg:'#f1f5f9',text:'#94a3b8'}};
+const STAGES=['없음','풀이','채점','오답','아하노트'];
+const PCTS=[0,30,60,100];
+const GRADE_NAMES=["초등학교 4학년","초등학교 5학년","초등학교 6학년","중학교 1학년","중학교 2학년","중학교 3학년","고등학교 1학년","고등학교 2학년","고등학교 3학년"];
+const HW_GUIDE={풀이:'문제를 처음 스스로 풀어보는 단계예요.',채점:'풀이 후 정답을 확인하고 맞고 틀림을 표시하는 단계예요.',오답:'틀린 문제를 다시 풀어보는 가장 중요한 단계예요! ⭐',아하노트:'틀린 이유를 스스로 정리하는 단계예요. 완성하면 실력이 크게 늘어요.'};
+
+const DEFAULT_PROMPT=`학생의 수학 진단 결과를 바탕으로 학부모에게 전달하는 따뜻하고 전문적인 피드백을 작성해주세요.
+
+[작성 조건]
+- 3~5문장으로 간결하게
+- 학생 이름을 직접 언급
+- 잘한 점(우수 유형)을 먼저 칭찬
+- 보완할 점(취약 유형)은 부드럽게 안내
+- 다음 수업 계획을 간략히 언급
+- 인사말·제목 없이 본문만 작성, 존댓말 사용
+
+[학생 데이터]
+이름: {name} / 학년: {grade}
+점수: {score}점 / 등급: {level}등급
+우수유형: {strong} / 취약유형: {weak}
+역량: {behaviors}`;
+
+/* ── 상태 ── */
+let apiKey=localStorage.getItem('or_api_key')||'';
+let schoolName=localStorage.getItem('or_school')||'루멘수학';
+let teacherName=localStorage.getItem('or_teacher')||'';
+let promptText=localStorage.getItem('or_prompt')||DEFAULT_PROMPT;
+let groupList=JSON.parse(localStorage.getItem('or_groups')||'["월수금반","화목토반","화목반"]');
+let VIEW='list', FT='basic', STUDENT_VIEW=false;
+let FILTER_GROUP='';
+let openFolders={};
+let list=JSON.parse(localStorage.getItem('or_students')||'[]');
+// 기존 데이터 전체 마이그레이션 (누락 필드 자동 보정)
+function migrateStudent(s){
+  if(!s)return s;
+  // showRank 기본값
+  if(s.showRank===undefined||s.showRank===null)s.showRank=true;
+  // testType 보정 - 전국 등수 있으면 weekly
+  if(!s.testType){s.testType=(s.rank&&s.total)?'weekly':'class';}
+  // 배열 필드 보정
+  if(!Array.isArray(s.units))s.units=[{name:'',student:'',avg:''},{name:'',student:'',avg:''}];
+  if(!Array.isArray(s.behaviors))s.behaviors=[
+    {name:'문제해결역량',score:'',grade:'',desc:'수학 개념을 문제 상황에 적절히 활용'},
+    {name:'추론역량',score:'',grade:'',desc:'논리적으로 절차를 수행하는 능력'},
+    {name:'의사소통역량',score:'',grade:'',desc:'수학적 표현을 이해하고 정확하게 사용'},
+    {name:'연결역량',score:'',grade:'',desc:'개념·원리·법칙을 관련지어 이해'},
+    {name:'정보처리역량',score:'',grade:'',desc:'자료와 정보를 목적에 맞게 수집·정리'},
+  ];
+  if(!Array.isArray(s.strong))s.strong=[{num:'',topic:'',sub:''},{num:'',topic:'',sub:''},{num:'',topic:'',sub:''}];
+  if(!Array.isArray(s.weak))s.weak=[{num:'',topic:'',sub:''},{num:'',topic:'',sub:''}];
+  if(!Array.isArray(s.items))s.items=Array.from({length:20},(_,i)=>({n:i+1,name:'',score:'',correct:true}));
+  // homework 보정
+  if(!s.homework||typeof s.homework!=='object')s.homework={show:true,rows:[{date:'날짜',stage:'없음',pct:0}]};
+  if(s.homework.show===undefined)s.homework.show=true;
+  if(!Array.isArray(s.homework.rows))s.homework.rows=[{date:'날짜',stage:'없음',pct:0}];
+  // 기본 필드 보정
+  if(!s.name)s.name='';
+  if(s.targetScore===undefined)s.targetScore='';
+  if(s.group===undefined)s.group='';
+  if(s.teacherMemo===undefined)s.teacherMemo='';
+  if(!s.grade)s.grade='중학교 1학년';
+  if(!s.date)s.date=new Date().toISOString().slice(0,10).replace(/-/g,'.');
+  return s;
+}
+list=list.map(migrateStudent);
+// 마이그레이션 결과 즉시 저장
+localStorage.setItem('or_students',JSON.stringify(list));
+let form=makeEmpty();
+let saveMsg='', fbLoading=false, promptSaved=false;
+let bulkOpen=false, bulkDate='', bulkDateChecks={}, bulkChecks={}, bulkMemos={}, bulkResults={}, bulkLoading=false, bulkProgress={total:0,done:0,current:''};
+let pdfQueue=[], pdfStatus=[], pdfProcessing=false;
+
+/* ── 데이터 구조 ── */
+function makeEmpty(){
+  return {
+    id:null,name:'',grade:'초등학교 6학년',
+    date:new Date().toISOString().slice(0,10).replace(/-/g,'.'),
+    score:'',level:'',rank:'',total:'',avgScore:'',bookname:'',comment:'',showRank:true,testType:'class',targetScore:'',group:'',teacherMemo:'',
+    units:[{name:'',student:'',avg:''},{name:'',student:'',avg:''}],
+    behaviors:[
+      {name:'문제해결역량',score:'',grade:'',desc:'수학 개념을 문제 상황에 적절히 활용'},
+      {name:'추론역량',score:'',grade:'',desc:'논리적으로 절차를 수행하는 능력'},
+      {name:'의사소통역량',score:'',grade:'',desc:'수학적 표현을 이해하고 정확하게 사용'},
+      {name:'연결역량',score:'',grade:'',desc:'개념·원리·법칙을 관련지어 이해'},
+      {name:'정보처리역량',score:'',grade:'',desc:'자료와 정보를 목적에 맞게 수집·정리'},
+    ],
+    strong:[{num:'',topic:'',sub:''},{num:'',topic:'',sub:''},{num:'',topic:'',sub:''}],
+    weak:[{num:'',topic:'',sub:''},{num:'',topic:'',sub:''}],
+    items:Array.from({length:20},(_,i)=>({n:i+1,name:'',score:'',correct:true})),
+    homework:{show:true,rows:[{date:'날짜',stage:'없음',pct:0}]},
+  };
+}
+function saveList(){localStorage.setItem('or_students',JSON.stringify(list));}
+
+/* ── 색상 ── */
+const GC=g=>{const n=Number(g);if(n<=1)return"#10b981";if(n===2)return"#3b82f6";if(n===3)return"#f59e0b";if(n===4)return"#f97316";return"#ef4444";};
+const GradeHdr=g=>{const n=Number(g);
+  if(n<=1)return"linear-gradient(135deg,#064e3b 0%,#065f46 50%,#059669 100%)";  // 에메랄드
+  if(n===2)return"linear-gradient(135deg,#0d2240 0%,#1a3564 60%,#1d6fe8 100%)";  // 블루(기본)
+  if(n===3)return"linear-gradient(135deg,#451a03 0%,#78350f 50%,#d97706 100%)";  // 앰버
+  if(n===4)return"linear-gradient(135deg,#431407 0%,#7c2d12 50%,#ea580c 100%)";  // 오렌지
+  return"linear-gradient(135deg,#450a0a 0%,#7f1d1d 50%,#dc2626 100%)";           // 레드
+};
+const SC=s=>{const n=Number(s);if(n>=85)return"#10b981";if(n>=75)return"#3b82f6";if(n>=65)return"#f59e0b";return"#ef4444";};
+
+/* ── API 키 ── */
+function setApiKey(){
+  const v=document.getElementById('api-inp')?.value.trim();
+  if(!v||!v.startsWith('sk-')){alert('올바른 API 키를 입력해주세요 (sk-ant-... 형태)');return;}
+  apiKey=v; localStorage.setItem('or_api_key',apiKey);
+  renderApiBanner(); render();
+}
+function clearApiKey(){if(!confirm('API 키를 삭제하시겠습니까?'))return;apiKey='';localStorage.removeItem('or_api_key');renderApiBanner();render();}
+function renderApiBanner(){
+  const el=document.getElementById('API_BANNER');
+  if(apiKey){
+    el.innerHTML=`<div class="api-ok"><span>🔑 API 키 등록됨 &nbsp;<span style="font-size:10px;color:#94a3b8">${apiKey.slice(0,14)}...</span></span><button onclick="clearApiKey()" style="background:none;border:none;cursor:pointer;font-size:11px;color:#dc2626;font-family:inherit">삭제</button></div>`;
+  }else{
+    el.innerHTML=`<div class="api-banner">
+      <div style="font-size:11px;color:#92400e;margin-bottom:6px">🔑 API 키를 등록하면 PDF 자동 분석·AI 피드백을 사용할 수 있어요</div>
+      <div style="display:flex;gap:8px">
+        <input id="api-inp" type="password" placeholder="sk-ant-api03-..." style="flex:1;border:1px solid #fcd34d;border-radius:8px;padding:7px 10px;font-size:12px;background:white;outline:none;font-family:inherit">
+        <button onclick="setApiKey()" style="padding:7px 16px;background:linear-gradient(135deg,#c05a05,#d97706);color:white;border:none;border-radius:9px;font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit;font-weight:700">등록</button>
+      </div>
+      <div style="font-size:10px;color:#b45309;margin-top:5px"><a href="https://console.anthropic.com" target="_blank" style="color:#0369a1">console.anthropic.com</a>에서 무료 발급 가능</div>
+    </div>`;
+  }
+}
+
+/* ── 네비 ── */
+const isDesktop=()=>window.innerWidth>=900;
+function go(v){
+  VIEW=v;
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  // 오른쪽 패널 탭
+  ['form','preview','share','settings','bulk'].forEach(t=>{
+    const el=document.getElementById('nb-'+t);if(el&&v===t)el.classList.add('on');
+  });
+  // 모바일 하단 탭
+  ['list','form','preview','share','settings','bulk'].forEach(t=>{
+    const el=document.getElementById('nb-'+t+'-m');if(el&&v===t)el.classList.add('on');
+  });
+  render();
+}
+function goMobile(v){
+  // 모바일에서는 전체 화면 전환
+  go(v);
+}
+
+function copyFromRecent(name, grade){
+  // 같은 이름+학년의 가장 최근 리포트를 찾아 단원·역량·항목 복사
+  const src=list.find(r=>r.name===name&&r.grade===grade);
+  if(!src){alert('복사할 이전 데이터가 없습니다');return;}
+  form=makeEmpty();
+  form.name=src.name;
+  form.grade=src.grade;
+  form.group=src.group||'';
+  // 단원·역량·우수/취약 유형 복사 (성적/날짜/총평은 초기화)
+  form.units=JSON.parse(JSON.stringify(src.units||[]));
+  form.behaviors=JSON.parse(JSON.stringify(src.behaviors||[])).map(b=>({...b,score:'',grade:''}));
+  form.strong=src.strong?src.strong.map(s=>({...s})):[{num:'',topic:'',sub:''},{num:'',topic:'',sub:''},{num:'',topic:'',sub:''}];
+  form.weak=src.weak?src.weak.map(w=>({...w})):[{num:'',topic:'',sub:''},{num:'',topic:'',sub:''}];
+  form.bookname=src.bookname||'';
+  form.testType=src.testType||'class';
+  form.date=new Date().toISOString().slice(0,10).replace(/-/g,'.');
+  FT='basic';
+  go('form');
+}
+
+function newStudent(){form=makeEmpty();FT='basic';go('form');}
+function newStudentPreset(name,grade){
+  form=makeEmpty();
+  form.name=name;
+  form.grade=grade;
+  FT='basic';
+  // 이전 반 자동 상속
+  const prevG=list.find(r=>r.name===name&&r.grade===grade&&r.group);
+  if(prevG)form.group=prevG.group;
+  go('form');
+}
+function loadStudent(id){
+  const s=list.find(x=>x.id===id);if(!s)return;
+  form=migrateStudent(JSON.parse(JSON.stringify(s)));
+  FT='basic';
+  go('form');
+  if(!form.comment&&apiKey){
+    setTimeout(()=>autoFeedback(form),300);
+  }
+}
+function loadAndPreview(id){
+  const s=list.find(x=>x.id===id);if(!s)return;
+  form=migrateStudent(JSON.parse(JSON.stringify(s)));
+  FT='basic';
+  go('preview');
+}
+function loadAndShare(id){
+  const s=list.find(x=>x.id===id);if(!s)return;
+  form=migrateStudent(JSON.parse(JSON.stringify(s)));
+  FT='basic';
+  go('share');
+}
+
+/* ── 저장 ── */
+function save(){
+  if(!form.name){alert('학생 이름을 입력해주세요');return;}
+  const id=form.id||'r_'+Date.now();form.id=id;form.savedAt=new Date().toISOString();
+  const idx=list.findIndex(s=>s.id===id);
+  if(idx>=0)list[idx]=form;else list.unshift(form);
+  saveList();saveMsg='저장 완료 ✓';render();setTimeout(()=>{saveMsg='';render();},2000);
+}
+function delStudent(id){if(!confirm('삭제하시겠습니까?'))return;list=list.filter(s=>s.id!==id);saveList();render();}
+function sf(k,v){form[k]=v;}
+function sa(f,i,k,v){form[f][i][k]=v;}
+function shr(i,k,v){form.homework.rows[i][k]=v;render();}
+function addHwRow(){form.homework.rows.push({date:'날짜',stage:'없음',pct:0});render();}
+function delHwRow(i){form.homework.rows.splice(i,1);render();}
+function toggleHwShow(){
+  if(!form.homework)form.homework={show:true,rows:[]};
+  form.homework.show=!form.homework.show;
+  const idx=list.findIndex(s=>s.id===form.id);
+  if(idx>=0){list[idx].homework=form.homework;saveList();}
+  render();
+}
+function toggleRank(){
+  const current=(form.showRank===undefined||form.showRank===null)?true:form.showRank;
+  form.showRank=!current;
+  const idx=list.findIndex(s=>s.id===form.id);
+  if(idx>=0){list[idx].showRank=form.showRank;saveList();}
+  render();
+}
+function autoResize(el){
+  if(!el)return;
+  el.style.height='auto';
+  el.style.height=Math.max(420,el.scrollHeight+20)+'px';
+}
+
+/* ── PDF 처리 ── */
+async function onFileChange(input){
+  if(!apiKey){alert('먼저 API 키를 등록해주세요!\n\n⚙️ 설정 탭에서 등록하거나\n상단 노란 배너에서 입력하세요.');return;}
+  const files=Array.from(input.files||[]).filter(f=>f.type.includes('pdf'));
+  if(!files.length)return;
+  files.forEach(f=>pdfStatus.push({name:f.name,st:'wait',err:''}));
+  pdfQueue.push(...files);
+  VIEW='analyzing';
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  render();
+  if(!pdfProcessing)runQueue();
+}
+
+async function runQueue(){
+  if(!pdfQueue.length){pdfProcessing=false;render();return;}
+  pdfProcessing=true;
+  const file=pdfQueue.shift();
+  const qi=pdfStatus.findIndex(q=>q.st==='wait');
+  if(qi>=0)pdfStatus[qi].st='proc';
+  render();
+  try{
+    if(typeof pdfjsLib==='undefined'||!pdfjsLib.getDocument)throw new Error('PDF 분석 기능 로딩 중입니다. 잠시 후 다시 시도해주세요.');
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const ab=await file.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:ab}).promise;
+    let text='';
+    for(let i=1;i<=Math.min(pdf.numPages,8);i++){
+      const page=await pdf.getPage(i);
+      const content=await page.getTextContent();
+      text+=content.items.map(it=>it.str).join(' ')+'\n';
+    }
+    text=text.trim();
+    if(!text||text.length<20)throw new Error('텍스트 없음 (이미지형 PDF)');
+    const d=await callAPI(text,file.name);
+    d.id='r_'+Date.now();d.savedAt=new Date().toISOString();d._shareId=null;d.comment=d.comment||'';
+    if(!d.homework)d.homework={show:true,rows:[{date:'날짜',stage:'없음',pct:0}]};
+    list.unshift(d);saveList();
+    if(qi>=0)pdfStatus[qi].st='done';
+    render();
+    autoFeedback(d);
+  }catch(e){
+    if(qi>=0){pdfStatus[qi].st='err';pdfStatus[qi].err=String(e.message||e).slice(0,80);}
+    render();
+  }
+  await new Promise(r=>setTimeout(r,600));
+  runQueue();
+}
+
+async function callAPI(text,filename){
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:2000,
+      messages:[{role:'user',content:`루멘수학 ONE REPORT PDF 텍스트입니다. 아래 JSON 형식으로만 응답. 마크다운 없이 순수 JSON만.
+
+date 추출 규칙 (중요):
+- PDF 텍스트 맨 앞(첫 줄)에 나오는 날짜를 사용. 예: "2026/3/17" → "2026.03.17"
+- 형식: YYYY.MM.DD (월/일 한 자리면 두 자리로 변환)
+- "03월 16일" 같은 수업/단원 날짜가 아닌, 문서 상단 생성 날짜 사용
+
+testType 판단:
+- 전국 인원수(예: "331명" "285명")나 "등수"가 있으면 → "weekly"
+- 없으면 → "class"
+
+파일명: ${filename}
+텍스트:
+${text.slice(0,4000)}
+
+출력:
+{"name":"","grade":"중학교 2학년","date":"","score":0,"level":0,"rank":null,"total":null,"avgScore":null,"comment":"","bookname":"","showRank":true,"testType":"class","units":[{"name":"","student":0,"avg":0}],"behaviors":[{"name":"문제해결역량","score":0,"grade":0,"desc":"수학 개념을 문제 상황에 적절히 활용"},{"name":"추론역량","score":0,"grade":0,"desc":"논리적으로 절차를 수행하는 능력"},{"name":"의사소통역량","score":0,"grade":0,"desc":"수학적 표현을 이해하고 정확하게 사용"},{"name":"연결역량","score":0,"grade":0,"desc":"개념·원리·법칙을 관련지어 이해"},{"name":"정보처리역량","score":0,"grade":0,"desc":"자료와 정보를 목적에 맞게 수집·정리"}],"strong":[{"num":0,"topic":"","sub":""}],"weak":[{"num":0,"topic":"","sub":""}],"items":[{"n":1,"name":"","score":0,"correct":true}],"homework":{"show":true,"rows":[{"date":"날짜","stage":"없음","pct":0}]}}`}]
+    })
+  });
+  if(!resp.ok){const j=await resp.json();throw new Error(j.error?.message||'HTTP '+resp.status);}
+  const j=await resp.json();
+  const txt=j.content.map(c=>c.text||'').join('');
+  return JSON.parse(txt.replace(/```json|```/g,'').trim());
+}
+
+async function autoFeedback(d){
+  if(!apiKey||!d.name)return;
+  fbLoading=true;if(FT==='comment')render();
+  try{
+    const strong=(d.strong||[]).filter(s=>s.topic).map(s=>s.topic).join(', ')||'없음';
+    const weak=(d.weak||[]).filter(w=>w.topic).map(w=>w.topic).join(', ')||'없음';
+    const behaviors=(d.behaviors||[]).filter(b=>b.score).map(b=>`${b.name}(${b.score}%,${b.grade}등급)`).join(', ');
+    let filled=promptText
+      .replace(/\{name\}/g,d.name).replace(/\{grade\}/g,d.grade)
+      .replace(/\{score\}/g,d.score).replace(/\{level\}/g,d.level)
+      .replace(/\{strong\}/g,strong).replace(/\{weak\}/g,weak)
+      .replace(/\{behaviors\}/g,behaviors);
+    const hasVars=promptText.includes('{name}')||promptText.includes('{score}');
+    if(!hasVars){
+      filled+=`\n\n[학생 정보]\n이름: ${d.name} / 학년: ${d.grade}\n점수: ${d.score}점 / 등급: ${d.level}등급\n우수유형: ${strong}\n취약유형: ${weak}\n역량: ${behaviors}`;
+    }
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:filled}]})
+    });
+    const j=await resp.json();
+    let txt=j.content[0]?.text||'';
+    txt=txt.replace(/^\[.*?\]\s*/,'');
+    txt=txt.replace(/^안녕하세요[^.]*\.\s*/,'');
+    txt=txt.replace(/^테스트점수:\s*\d+점\s*/m,'');
+    txt=txt.replace(/^\s*\n/gm,'').trim();
+    d.comment=txt;
+    const idx=list.findIndex(s=>s.id===d.id);
+    if(idx>=0){list[idx]=d;saveList();}
+    if(VIEW==='list'||VIEW==='form')render();
+  }catch{}
+  fbLoading=false;
+}
+
+async function genFeedback(){
+  if(!apiKey){alert('API 키를 먼저 등록해주세요');return;}
+  fbLoading=true;render();
+  try{
+    const d=form;
+    const strong=(d.strong||[]).filter(s=>s.topic).map(s=>s.topic).join(', ')||'없음';
+    const weak=(d.weak||[]).filter(w=>w.topic).map(w=>w.topic).join(', ')||'없음';
+    const behaviors=(d.behaviors||[]).filter(b=>b.score).map(b=>`${b.name}(${b.score}%,${b.grade}등급)`).join(', ');
+    // 프롬프트에 {변수} 치환 시도 + 없으면 뒤에 데이터 추가
+    let filled=promptText
+      .replace(/\{name\}/g,d.name).replace(/\{grade\}/g,d.grade)
+      .replace(/\{score\}/g,d.score).replace(/\{level\}/g,d.level)
+      .replace(/\{strong\}/g,strong).replace(/\{weak\}/g,weak)
+      .replace(/\{behaviors\}/g,behaviors);
+    // 숙제 요약
+    const hwRows2=(d.homework?.rows||[]).filter(r=>r.stage!=='없음');
+    const hwSummary=hwRows2.length?hwRows2.map(r=>r.date+' '+r.stage+' '+r.pct+'%').join(', '):'없음';
+    // 학생 데이터가 프롬프트에 변수 없으면 뒤에 자동 추가
+    const hasVars=promptText.includes('{name}')||promptText.includes('{score}');
+    if(!hasVars){
+      filled+=`\n\n[학생 정보]\n이름: ${d.name} / 학년: ${d.grade}\n점수: ${d.score}점 / 등급: ${d.level}등급\n목표점수: ${d.targetScore||'미설정'}\n우수유형: ${strong}\n취약유형: ${weak}\n역량: ${behaviors||'없음'}\n숙제완성도: ${hwSummary}`;
+    }
+    // 선생님 메모 반영 (최우선)
+    if(d.teacherMemo&&d.teacherMemo.trim()){
+      filled+=`\n\n[선생님 특별 메모 - 아래 내용을 피드백에 자연스럽게 녹여서 작성해주세요]\n${d.teacherMemo.trim()}`;
+    }
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:filled}]})
+    });
+    const j=await resp.json();
+    let txt=j.content[0]?.text||'';
+    txt=txt.replace(/^\[.*?\]\s*/,'');
+    txt=txt.replace(/^안녕하세요[^.]*\.\s*/,'');
+    txt=txt.replace(/^테스트점수:\s*\d+점\s*/m,'');
+    txt=txt.replace(/^\s*\n/gm,'').trim();
+    form.comment=txt;
+  }catch(e){alert('피드백 생성 실패: '+e.message);}
+  fbLoading=false;render();
+}
+
+/* ── 일괄 피드백 뷰 ── */
+function rBulk(){
+  if(!apiKey){
+    return`<div style="padding:24px 20px">
+      <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:14px;padding:16px;text-align:center">
+        <div style="font-size:32px;margin-bottom:10px">🔑</div>
+        <div style="font-size:14px;font-weight:700;color:#92400e;margin-bottom:6px">API 키가 필요합니다</div>
+        <div style="font-size:12px;color:#b45309;margin-bottom:14px">설정 탭에서 API 키를 등록하면<br>일괄 피드백 생성을 사용할 수 있어요</div>
+        <button onclick="go('settings')" style="padding:10px 24px;background:#d97706;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">⚙️ 설정으로 이동</button>
+      </div>
+    </div>`;
+  }
+
+  const allDates=[...new Set(list.map(r=>r.date||'').filter(Boolean))].sort().reverse();
+  if(!allDates.includes(bulkDate)&&allDates.length) bulkDate=allDates[0];
+  const today=new Date().toISOString().slice(0,10).replace(/-/g,'.');
+
+  // 선택된 날짜들의 모든 리포트 (누적)
+  const selectedDates=bulkDateChecks;
+  if(!Object.keys(selectedDates).length&&allDates.length){
+    // 기본: 오늘 날짜 또는 최신 날짜 자동 선택
+    const defaultDate=allDates.includes(today)?today:allDates[0];
+    bulkDateChecks[defaultDate]=true;
+  }
+
+  const bulkTargets=list.filter(r=>bulkDateChecks[r.date||''])
+    .sort((a,b)=>(a.date||'').localeCompare(b.date||'')||a.name.localeCompare(b.name,'ko'));
+
+  const checkedCount=bulkTargets.filter(r=>bulkChecks[r.id]!==false&&(bulkChecks[r.id]===true||!r.comment)).length;
+  const doneCount=Object.values(bulkResults).filter(v=>v==='done').length;
+
+  return`<div style="padding:16px;height:100%;display:flex;flex-direction:column;gap:14px">
+
+    <!-- 날짜 선택 -->
+    <div style="background:white;border-radius:14px;padding:14px;border:1.5px solid #e8edf5">
+      <div style="font-size:12px;font-weight:700;color:#64748b;margin-bottom:9px">📅 날짜 선택 (여러 날짜 동시 선택 가능)</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${allDates.slice(0,14).map(d=>{
+          const cnt=list.filter(r=>r.date===d).length;
+          const isToday=d===today;
+          const isSelected=!!bulkDateChecks[d];
+          return`<button onclick="bulkDateChecks['${d}']=!bulkDateChecks['${d}'];if(!bulkDateChecks['${d}'])delete bulkDateChecks['${d}'];render()"
+            style="padding:7px 13px;border-radius:20px;border:2px solid ${isSelected?'#0369a1':'#e2e8f0'};background:${isSelected?'#0369a1':'white'};color:${isSelected?'white':'#475569'};font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all 0.15s">
+            ${isToday?'📍 ':''}${d.slice(5).replace('.','/').replace(/^0/,'')} <span style="opacity:${isSelected?'0.85':'0.6'};font-size:11px">${cnt}명</span>
+          </button>`;
+        }).join('')}
+      </div>
+      ${Object.keys(bulkDateChecks).length>0?`<div style="margin-top:8px;font-size:11px;color:#0369a1;font-weight:600">✔ 선택된 날짜: ${Object.keys(bulkDateChecks).sort().reverse().join(', ')} · 총 ${bulkTargets.length}명</div>`:''}
+    </div>
+
+    <!-- 학생 목록 -->
+    <div style="background:white;border-radius:14px;border:1.5px solid #e8edf5;overflow:hidden;flex:1">
+      <!-- 전체선택 헤더 -->
+      <div style="padding:11px 14px;background:#f8fafc;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;font-weight:700;color:#0369a1">
+          <input type="checkbox" onchange="bulkToggleAll(this.checked,bulkTargets)" style="width:16px;height:16px;cursor:pointer"
+            ${bulkTargets.length>0&&bulkTargets.every(r=>bulkChecks[r.id]!==false&&(bulkChecks[r.id]===true||!r.comment))?'checked':''}> 전체 선택
+        </label>
+        <span style="font-size:11px;color:#94a3b8">피드백 없는 학생 자동 체크 · ${checkedCount}명 선택됨</span>
+      </div>
+
+      <!-- 학생 행 -->
+      <div style="overflow-y:auto;max-height:420px">
+        ${bulkTargets.length===0
+          ?`<div style="text-align:center;padding:40px 20px;color:#94a3b8"><div style="font-size:36px;margin-bottom:10px">📅</div><div style="font-size:13px">날짜를 선택하면 학생이 나타납니다</div></div>`
+          :bulkTargets.map(r=>{
+            const isChecked=bulkChecks[r.id]!==false&&(bulkChecks[r.id]===true||!r.comment);
+            const res=bulkResults[r.id];
+            const gc=r.level?GC(r.level):'#94a3b8';
+            const savedComment=list.find(s=>s.id===r.id)?.comment||'';
+            return`<div style="padding:11px 14px;border-bottom:1px solid #f8fafc;background:${res==='done'?'#f0fdf4':res==='loading'?'#eff6ff':res==='err'?'#fff1f2':'white'}">
+              <div style="display:flex;align-items:center;gap:9px;margin-bottom:${res==='done'?'8px':'6px'}">
+                <input type="checkbox" onchange="bulkChecks['${r.id}']=this.checked;render()" ${isChecked?'checked':''} style="width:16px;height:16px;cursor:pointer;flex-shrink:0">
+                <div style="flex:1;min-width:0">
+                  <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+                    <span style="font-size:13px;font-weight:800;color:#0d2240">${r.name}</span>
+                    <span style="font-size:10px;background:#f1f5f9;color:#64748b;padding:1px 7px;border-radius:20px">${r.grade}</span>
+                    ${r.score?`<span style="font-size:10px;background:#e0f2fe;color:#0369a1;padding:1px 7px;border-radius:20px;font-weight:700">${r.score}점</span>`:''}
+                    ${r.level?`<span style="font-size:10px;padding:1px 7px;border-radius:20px;font-weight:700;background:${gc}18;color:${gc}">${r.level}등급</span>`:''}
+                    <span style="font-size:10px;color:#94a3b8">${r.date||''}</span>
+                    ${r.comment?`<span style="font-size:10px;background:#fef9c3;color:#92400e;padding:1px 6px;border-radius:20px">피드백 있음</span>`:''}
+                  </div>
+                  ${r.bookname?`<div style="font-size:10px;color:#94a3b8;margin-top:2px">📖 ${r.bookname}</div>`:''}
+                </div>
+                <span style="font-size:13px;flex-shrink:0">${res==='loading'?'⏳':res==='done'?'✅':res==='err'?'❌':''}</span>
+              </div>
+              <input placeholder="메모 (선택사항) — 특이사항, 칭찬포인트 등"
+                value="${(bulkMemos[r.id]||'').replace(/"/g,'&quot;')}"
+                oninput="bulkMemos['${r.id}']=this.value"
+                style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:#334155;${res==='done'?'margin-bottom:8px;':''}">
+              ${res==='done'?`<textarea oninput="bulkSaveComment('${r.id}',this.value)"
+                style="width:100%;border:1px solid #6ee7b7;border-radius:8px;padding:8px 10px;font-size:12px;font-family:inherit;outline:none;color:#334155;resize:vertical;min-height:80px;line-height:1.7">${savedComment.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>`:''}
+            </div>`;
+          }).join('')}
+      </div>
+    </div>
+
+    <!-- 진행 상황 바 -->
+    ${bulkLoading?`<div style="background:white;border-radius:13px;padding:14px 16px;border:1.5px solid #bae6fd">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:13px;font-weight:700;color:#0369a1">✨ ${bulkProgress.current} 피드백 생성 중...</span>
+        <span style="font-size:12px;color:#64748b;font-weight:600">${bulkProgress.done} / ${bulkProgress.total}명</span>
+      </div>
+      <div style="height:8px;background:#e0f2fe;border-radius:99px;overflow:hidden">
+        <div style="height:100%;width:${bulkProgress.total?Math.round((bulkProgress.done/bulkProgress.total)*100):0}%;background:linear-gradient(135deg,#0369a1,#0ea5e9);border-radius:99px;transition:width 0.4s"></div>
+      </div>
+      <div style="font-size:11px;color:#64748b;margin-top:6px;text-align:center">${bulkProgress.total?Math.round((bulkProgress.done/bulkProgress.total)*100):0}% 완료 · 잠시만 기다려주세요</div>
+    </div>`:''}
+
+    <!-- 날짜 일괄 수정 -->
+    <div style="background:white;border-radius:14px;padding:14px 16px;border:1.5px solid #e8edf5">
+      <div style="font-size:12px;font-weight:700;color:#64748b;margin-bottom:9px">📅 날짜 일괄 수정 <span style="font-weight:400;color:#94a3b8">(체크된 학생에 적용)</span></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="date" id="bulk-date-inp" style="flex:1;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none;color:#334155" value="${new Date().toISOString().slice(0,10)}">
+        <button onclick="bulkChangeDate()" style="padding:9px 18px;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">📅 날짜 변경</button>
+      </div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:6px">💡 PDF 생성일과 시험 날짜가 다를 때 사용하세요</div>
+    </div>
+
+    <!-- 하단 버튼 -->
+    <div style="display:flex;gap:8px">
+      <button onclick="runBulkFeedback(bulkTargets)" ${bulkLoading||!checkedCount?'disabled':''}
+        style="flex:1;padding:14px;background:${bulkLoading||!checkedCount?'#94a3b8':'linear-gradient(135deg,#0369a1,#0ea5e9)'};color:white;border:none;border-radius:13px;font-size:13px;font-weight:800;cursor:${bulkLoading||!checkedCount?'not-allowed':'pointer'};font-family:inherit;letter-spacing:0.2px">
+        ${bulkLoading?'⏳ '+bulkProgress.done+'/'+bulkProgress.total+'명 완료 중...':'✨ 선택된 '+checkedCount+'명 피드백 생성'}
+      </button>
+      ${doneCount>0&&!bulkLoading?`<button onclick="bulkSaveAll()" style="padding:14px 18px;background:linear-gradient(135deg,#059669,#10b981);color:white;border:none;border-radius:13px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap">💾 전체 저장</button>`:''}
+    </div>
+  </div>`;
+}
+
+/* ── 일괄 피드백 ── */
+function bulkToggleAll(checked, targets){
+  (targets||[]).forEach(r=>{bulkChecks[r.id]=checked;});
+  render();
+}
+
+async function genFeedbackForStudent(r){
+  const strong=(r.strong||[]).filter(s=>s.topic).map(s=>s.topic).join(', ')||'없음';
+  const weak=(r.weak||[]).filter(w=>w.topic).map(w=>w.topic).join(', ')||'없음';
+  const behaviors=(r.behaviors||[]).filter(b=>b.score).map(b=>`${b.name}(${b.score}%,${b.grade}등급)`).join(', ');
+  const hwRows=(r.homework?.rows||[]).filter(row=>row.stage!=='없음');
+  const hwSummary=hwRows.length?hwRows.map(row=>row.date+' '+row.stage+' '+row.pct+'%').join(', '):'없음';
+  let filled=promptText
+    .replace(/\{name\}/g,r.name).replace(/\{grade\}/g,r.grade)
+    .replace(/\{score\}/g,r.score).replace(/\{level\}/g,r.level)
+    .replace(/\{strong\}/g,strong).replace(/\{weak\}/g,weak)
+    .replace(/\{behaviors\}/g,behaviors);
+  const hasVars=promptText.includes('{name}')||promptText.includes('{score}');
+  if(!hasVars){
+    filled+=`\n\n[학생 정보]\n이름: ${r.name} / 학년: ${r.grade}\n점수: ${r.score}점 / 등급: ${r.level}등급\n목표점수: ${r.targetScore||'미설정'}\n우수유형: ${strong}\n취약유형: ${weak}\n역량: ${behaviors||'없음'}\n숙제완성도: ${hwSummary}`;
+  }
+  const memo=bulkMemos[r.id]||'';
+  if(memo.trim()){
+    filled+=`\n\n[선생님 특별 메모 - 아래 내용을 피드백에 자연스럽게 녹여서 작성해주세요]\n${memo.trim()}`;
+  }
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:filled}]})
+  });
+  const j=await resp.json();
+  let txt=j.content[0]?.text||'';
+  txt=txt.replace(/^\[.*?\]\s*/,'').replace(/^안녕하세요[^.]*\.\s*/,'').replace(/^\s*\n/gm,'').trim();
+  return txt;
+}
+
+async function runBulkFeedback(targets){
+  if(!apiKey){alert('API 키를 먼저 등록해주세요 (설정 탭)');return;}
+  const selected=(targets||[]).filter(r=>bulkChecks[r.id]!==false&&(bulkChecks[r.id]===true||!r.comment));
+  if(!selected.length){alert('선택된 학생이 없습니다');return;}
+  bulkLoading=true;
+  bulkProgress={total:selected.length,done:0,current:''};
+  render();
+  for(const r of selected){
+    bulkResults[r.id]='loading';
+    bulkProgress.current=r.name;
+    render();
+    try{
+      const txt=await genFeedbackForStudent(r);
+      const idx=list.findIndex(s=>s.id===r.id);
+      if(idx>=0){list[idx].comment=txt;}
+      bulkResults[r.id]='done';
+    }catch(e){
+      bulkResults[r.id]='err';
+      console.error('피드백 생성 실패:',r.name,e.message);
+    }
+    bulkProgress.done++;
+    render();
+    await new Promise(res=>setTimeout(res,400));
+  }
+  bulkLoading=false;
+  bulkProgress={total:0,done:0,current:''};
+  render();
+}
+
+function bulkSaveComment(id, txt){
+  const idx=list.findIndex(s=>s.id===id);
+  if(idx>=0){list[idx].comment=txt;saveList();}
+}
+
+function bulkChangeDate(){
+  const inp=document.getElementById('bulk-date-inp');
+  if(!inp||!inp.value){alert('날짜를 선택해주세요');return;}
+  const newDate=inp.value.replace(/-/g,'.');
+  // 체크된 학생 직접 계산
+  const selected=list.filter(r=>bulkChecks[r.id]===true||(bulkChecks[r.id]!==false&&!r.comment));
+  if(!selected.length){alert('체크된 학생이 없습니다');return;}
+  selected.forEach(r=>{
+    const idx=list.findIndex(s=>s.id===r.id);
+    if(idx>=0)list[idx].date=newDate;
+    if(form.id===r.id)form.date=newDate;
+  });
+  saveList();
+  alert('✅ '+selected.length+'명의 날짜를 '+newDate+'로 변경했습니다!');
+  render();
+}
+
+function bulkSaveAll(){
+  saveList();
+  // 현재 form에 열려있는 학생도 업데이트
+  if(form.id){
+    const updated=list.find(r=>r.id===form.id);
+    if(updated)form=JSON.parse(JSON.stringify(updated));
+  }
+  bulkResults={};
+  const cnt=Object.keys(bulkChecks).filter(id=>bulkChecks[id]!==false).length;
+  alert(`✅ ${cnt}명 피드백이 저장됐습니다!`);
+  render();
+}
+
+/* ── 리포트 HTML 생성 ── */
+function buildReportHTML(d){
+  const GCf=g=>{const n=Number(g);if(n<=1)return"#10b981";if(n===2)return"#3b82f6";if(n===3)return"#f59e0b";if(n===4)return"#f97316";return"#ef4444";};
+  const SCf=s=>{const n=Number(s);if(n>=85)return"#10b981";if(n>=75)return"#3b82f6";if(n>=65)return"#f59e0b";return"#ef4444";};
+  const sv=Number(d.score)||0;
+  const rp=d.total?Math.round((Number(d.rank)/Number(d.total))*100):0;
+  const circ=2*Math.PI*42,dash=(sv/100)*circ;
+  const hs=(d.strong||[]).filter(s=>s.topic);
+  const hw=(d.weak||[]).filter(w=>w.topic);
+  const sn=schoolName||'루멘수학';
+  const tn=teacherName?` · ${teacherName}`:'';
+
+  let unitsH='';
+  if((d.units||[]).some(u=>u.name)){
+    unitsH=`<div style="background:white;border-radius:14px;padding:15px;margin-top:11px;border:1px solid #e8eef8">
+      <div style="font-size:13px;font-weight:700;color:#0d2240;margin-bottom:13px;font-weight:800">📚 단원별 정답률</div>`;
+    d.units.filter(u=>u.name).forEach(u=>{
+    unitsH+=`<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:16px;font-weight:600;color:#334155">${u.name}</span><span style="font-size:16px;font-weight:700;color:${SCf(u.student)}">${u.student}%</span></div>
+      <div style="height:11px;background:#f1f5f9;border-radius:99px;overflow:hidden;position:relative">
+        ${u.avg?`<div style="position:absolute;height:100%;width:${u.avg}%;background:#cbd5e1;border-radius:99px"></div>`:''}
+        <div style="position:absolute;height:100%;width:${u.student}%;background:${SCf(u.student)};border-radius:99px"></div>
+      </div>
+      ${u.avg?`<div style="font-size:13px;color:#94a3b8;margin-top:3px">● 학생 &nbsp;◌ 전국평균 ${u.avg}%</div>`:''}</div>`;
+    });
+    unitsH+=`</div>`;
+  }
+
+  let swH='';
+  if(hs.length||hw.length){
+    swH=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:13px">
+      <div style="background:white;border-radius:14px;padding:15px;border:1px solid #d1fae5">
+        <div style="font-size:16px;font-weight:700;color:#059669;margin-bottom:11px">✨ 우수 유형</div>
+        ${hs.map(s=>`<div style="display:flex;gap:8px;margin-bottom:10px"><div style="width:28px;height:28px;border-radius:6px;background:#ecfdf5;border:1px solid #6ee7b7;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#059669;flex-shrink:0">${s.num}</div><div><div style="font-size:14px;font-weight:600;color:#334155;line-height:1.4">${s.topic}</div><div style="font-size:12px;color:#94a3b8">${s.sub||''}</div></div></div>`).join('')}
+      </div>
+      <div style="background:white;border-radius:14px;padding:15px;border:1px solid #fee2e2">
+        <div style="font-size:16px;font-weight:700;color:#dc2626;margin-bottom:11px">🎯 집중 보완</div>
+        ${hw.map(w=>`<div style="display:flex;gap:8px;margin-bottom:10px"><div style="width:28px;height:28px;border-radius:6px;background:#fff1f2;border:1px solid #fca5a5;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#dc2626;flex-shrink:0">${w.num}</div><div><div style="font-size:14px;font-weight:600;color:#334155;line-height:1.4">${w.topic}</div><div style="font-size:12px;color:#94a3b8">${w.sub||''}</div></div></div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  let behavH='';
+  if((d.behaviors||[]).some(b=>b.score)){
+    behavH=`<div style="background:white;border-radius:14px;padding:17px;margin-top:13px;border:1px solid #e8eef8">
+      <div style="font-size:17px;font-weight:700;color:#0d2240;margin-bottom:15px;font-weight:800">🧠 역량별 분석</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">
+        ${d.behaviors.filter(b=>b.score).map(b=>`<div style="background:#f8fafc;border-radius:12px;padding:13px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span style="font-size:15px;font-weight:600;color:#334155">${b.name}</span>
+            ${b.grade?`<span style="font-size:12px;font-weight:700;background:${GCf(b.grade)}22;color:${GCf(b.grade)};padding:3px 8px;border-radius:99px">${b.grade}등급</span>`:''}
+          </div>
+          <div style="height:9px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:5px"><div style="height:100%;width:${b.score}%;background:${GCf(b.grade)};border-radius:99px"></div></div>
+          <div style="font-size:16px;font-weight:700;color:${GCf(b.grade)}">${b.score}%</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:3px;line-height:1.4">${b.desc||''}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  let itemsH='';
+  if((d.items||[]).some(it=>it.name)){
+    itemsH=`<div style="background:white;border-radius:14px;padding:17px;margin-top:13px;border:1px solid #e8eef8">
+      <div style="font-size:17px;font-weight:700;color:#0d2240;margin-bottom:14px;font-weight:800">📝 문항별 상세 결과</div>
+      ${d.items.filter(it=>it.name).map(it=>{const col=SCf(it.score);return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f8fafc">
+        <div style="width:32px;height:32px;border-radius:7px;background:${it.correct?'#f0fdf4':'#fff1f2'};border:1px solid ${it.correct?'#86efac':'#fca5a5'};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:${it.correct?'#16a34a':'#dc2626'};flex-shrink:0">${it.n}</div>
+        <div style="flex:1;font-size:15px;color:#475569;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${it.name}</div>
+        <div style="width:70px;height:8px;background:#f1f5f9;border-radius:99px;flex-shrink:0;overflow:hidden"><div style="height:100%;width:${it.score||0}%;background:${col};border-radius:99px"></div></div>
+        <span style="font-size:14px;font-weight:700;color:${col};min-width:36px;text-align:right">${it.score}%</span>
+        <span style="font-size:18px">${it.correct?'✅':'❌'}</span>
+      </div>`;}).join('')}
+    </div>`;
+  }
+
+  let hwH='';
+  if(d.homework?.show&&(d.homework?.rows||[]).length){
+    const rows=d.homework.rows.filter(r=>r.stage!=='없음'||r.pct>0);
+    const summary={};
+    (d.homework.rows||[]).forEach(r=>{if(r.stage!=='없음')summary[r.stage]=(summary[r.stage]||0)+1;});
+    hwH=`<div style="background:white;border-radius:14px;padding:17px;margin-top:13px;border:1px solid #e8eef8">
+      <div style="font-size:17px;font-weight:700;color:#0d2240;margin-bottom:13px;font-weight:800">📓 숙제 완성도</div>
+      ${Object.keys(summary).length?`<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px">${Object.entries(summary).map(([s,c])=>`<div style="display:flex;align-items:center;gap:5px;background:#f8fafc;border-radius:20px;padding:4px 11px;font-size:13px;color:#334155"><div style="width:8px;height:8px;border-radius:50%;background:${(SS[s]||SS['없음']).bar}"></div>${s} ${c}회</div>`).join('')}</div>`:''}
+      ${d.homework.rows.map(r=>{const sv=SS[r.stage]||SS['없음'];const pv=PS[r.pct]||PS[0];return`<div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #f8fafc">
+        <span style="font-size:14px;color:#64748b;min-width:72px;flex-shrink:0">${r.date}</span>
+        <span style="font-size:13px;font-weight:700;padding:4px 10px;border-radius:20px;background:${sv.bg};color:${sv.text};flex-shrink:0">${r.stage}</span>
+        <div style="flex:1;height:10px;background:#f1f5f9;border-radius:99px;overflow:hidden"><div style="height:100%;width:${r.pct}%;background:${sv.bar};border-radius:99px"></div></div>
+        <span style="font-size:14px;font-weight:700;padding:3px 10px;border-radius:20px;background:${pv.bg};color:${pv.text};flex-shrink:0">${r.pct}%</span>
+      </div>`;}).join('')}
+      <div style="background:#f8fafc;border-radius:12px;padding:14px;margin-top:13px">
+        <div style="font-size:15px;font-weight:700;color:#334155;margin-bottom:10px">📖 숙제 단계 안내</div>
+        ${Object.entries(SS).filter(([k])=>k!=='없음').map(([s,v])=>`<div style="display:flex;align-items:flex-start;gap:9px;margin-bottom:8px">
+          <span style="font-size:13px;font-weight:700;padding:3px 9px;border-radius:20px;background:${v.bg};color:${v.text};flex-shrink:0;margin-top:1px">${s}</span>
+          <span style="font-size:14px;color:#64748b;line-height:1.5">${HW_GUIDE[s]||''}</span>
+        </div>`).join('')}
+        <div style="font-size:13px;color:#94a3b8;margin-top:9px;padding-top:9px;border-top:1px solid #e2e8f0;line-height:1.7">💡 완성도: 0% 시작 전 · 30% 진행 중 · 60% 절반 이상 · 100% 완전 완료 ✅</div>
+      </div>
+    </div>`;
+  }
+
+  return`<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${d.name} 학습 리포트 - ${sn}</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#f0f4f8;font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;padding:16px;min-height:100vh;font-size:17px}.wrap{width:100%;max-width:600px;margin:0 auto;padding:16px 16px 50px}</style>
+</head><body><div class="wrap">
+  <div style="background:#0369a1;padding:26px 18px;border-radius:16px;color:white;position:relative;overflow:hidden;margin-bottom:0">
+    <div style="position:absolute;top:-25px;right:-25px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.08)"></div>
+    <div style="font-size:14px;opacity:0.75;letter-spacing:0.5px;margin-bottom:5px">🏫 ${sn}${tn} · ONE REPORT</div>
+    <div style="font-size:30px;font-weight:700">${d.name} 학습 리포트</div>
+    <div style="font-size:17px;opacity:0.85;margin-top:5px">${d.grade} · 진단일 ${d.date}</div>
+    ${d.bookname?`<div style="font-size:14px;opacity:0.7;margin-top:4px">📖 ${d.bookname}</div>`:''}
+  </div>
+  <div style="background:white;border-radius:14px;padding:15px;margin-top:12px;border:1px solid #e0f2fe;box-shadow:0 4px 16px rgba(14,165,233,0.08)">
+    <div style="font-size:17px;font-weight:700;color:#0d2240;margin-bottom:16px;font-weight:800">📊 종합 성적</div>
+    <div style="display:flex;align-items:center;gap:18px">
+      <svg width="110" height="110" viewBox="0 0 110 110">
+        <circle cx="55" cy="55" r="46" fill="none" stroke="#e2e8f0" stroke-width="9"/>
+        <circle cx="55" cy="55" r="46" fill="none" stroke="#0ea5e9" stroke-width="9" stroke-dasharray="${(sv/100)*(2*Math.PI*46)} ${2*Math.PI*46}" stroke-linecap="round" transform="rotate(-90 55 55)"/>
+        <text x="55" y="51" text-anchor="middle" fill="#0ea5e9" font-size="24" font-weight="700" font-family="sans-serif">${sv}</text>
+        <text x="55" y="70" text-anchor="middle" fill="#94a3b8" font-size="14" font-family="sans-serif">점</text>
+      </svg>
+      <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+        <div style="background:#f8fafc;border-radius:12px;padding:11px 15px">
+          <div style="font-size:13px;color:#94a3b8">등급</div>
+          <div style="font-size:32px;font-weight:700;color:${GCf(d.level)}">${d.level||'-'}<span style="font-size:17px;font-weight:500">등급</span></div>
+        </div>
+        ${d.rank&&d.total&&d.showRank!==false?`<div style="background:#f8fafc;border-radius:12px;padding:11px 15px">
+          <div style="font-size:13px;color:#94a3b8">전국 등수</div>
+          <div style="font-size:20px;font-weight:700;color:#334155"><span style="color:#0ea5e9">${d.rank}</span><span style="font-size:14px;color:#94a3b8;font-weight:400">등 / ${d.total}명</span></div>
+          <div style="height:6px;background:#e2e8f0;border-radius:99px;margin-top:5px;overflow:hidden"><div style="height:100%;width:${100-rp}%;background:#0ea5e9;border-radius:99px"></div></div>
+          <div style="font-size:13px;color:#94a3b8;margin-top:3px">상위 ${rp}%</div>
+        </div>`:''}
+      </div>
+    </div>
+    ${d.avgScore?`<div style="margin-top:13px;background:#f0f9ff;border-radius:12px;padding:11px 15px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:15px;color:#64748b">전국 평균 대비</span>
+      <span style="font-size:18px;font-weight:700;color:${Number(d.score)>=Number(d.avgScore)?'#16a34a':'#ef4444'}">${Number(d.score)>=Number(d.avgScore)?'▲':'▼'} ${Math.round(Math.abs(Number(d.score)-Number(d.avgScore)))}점</span>
+    </div>`:''}
+  </div>
+  ${unitsH}${swH}${behavH}${itemsH}${hwH}
+  ${d.comment?`<div style="background:#0369a1;border-radius:14px;padding:18px 20px;margin-top:13px;color:white">
+    <div style="font-size:16px;font-weight:700;margin-bottom:8px">💬 선생님 총평</div>
+    <div style="font-size:16px;line-height:1.9;opacity:0.95;white-space:pre-wrap">${d.comment}</div>
+  </div>`:''}
+  <div style="text-align:center;margin-top:18px;font-size:13px;color:#94a3b8">🏫 ${sn}${tn} · Lumen Math Academy</div>
+</div></body></html>`;
+}
+
+// 학생 전체 기록을 담은 멀티 리포트 HTML 생성 (미리렌더링 방식 - iPhone 호환)
+function buildMultiReportHTML(reports){
+  if(!reports||!reports.length)return'';
+  const d0=reports[0];
+  const sn=schoolName||'루멘수학';
+  const tn=teacherName?` · ${teacherName}`:'';
+
+  function buildBody(d){
+    const gcFn=g=>{const n=Number(g);if(n<=1)return'#10b981';if(n===2)return'#3b82f6';if(n===3)return'#f59e0b';if(n===4)return'#f97316';return'#ef4444';};
+    const scFn=s=>{const n=Number(s);if(n>=85)return'#10b981';if(n>=75)return'#3b82f6';if(n>=65)return'#f59e0b';return'#ef4444';};
+    const sv=Number(d.score)||0;
+    const rp=d.total?Math.round((Number(d.rank)/Number(d.total))*100):0;
+    const hdrBg=(g=>{const n=Number(g);if(n<=1)return'linear-gradient(135deg,#064e3b,#059669)';if(n===2)return'linear-gradient(135deg,#0d2240,#1d6fe8)';if(n===3)return'linear-gradient(135deg,#451a03,#d97706)';if(n===4)return'linear-gradient(135deg,#431407,#ea580c)';return'linear-gradient(135deg,#450a0a,#dc2626)';})(d.level);
+    const gc2=gcFn(d.level);
+    const circ=2*Math.PI*46;
+    const dash=(sv/100)*circ;
+
+    const wR=reports.filter(r=>r.testType==='weekly'&&r.score).slice().reverse();
+    const cR=reports.filter(r=>r.testType!=='weekly'&&r.score).slice().reverse();
+    let growthH='';
+    if(wR.length>=1||cR.length>=1){
+      const allSc=[...wR,...cR].map(r=>Number(r.score));
+      const gmn=Math.max(0,Math.min(...allSc)-15),gmx=Math.min(100,Math.max(...allSc)+15);
+      const GW=320,GH=110,GP=18;
+      const gPts=arr=>{const sc=arr.map(r=>Number(r.score));if(sc.length===1){const x=GW/2,y=GH-GP-18-(sc[0]-gmn)/((gmx-gmn)||1)*(GH-GP*2-18);return{pts:[x+','+y],scores:sc,single:true};}const xs=(GW-GP*2)/(sc.length-1),ys=(GH-GP*2-18)/((gmx-gmn)||1);return{pts:sc.map((s,i)=>(GP+i*xs)+','+(GH-GP-18-(s-gmn)*ys)),scores:sc,single:false};};
+      const wg=wR.length?gPts(wR):{pts:[],scores:[],single:false};
+      const cg=cR.length?gPts(cR):{pts:[],scores:[],single:false};
+      const wL=wg.scores.length?wg.scores[wg.scores.length-1]:null;
+      const cL=cg.scores.length?cg.scores[cg.scores.length-1]:null;
+      const wPv=wg.scores.length>=2?wg.scores[wg.scores.length-2]:null;
+      const cPv=cg.scores.length>=2?cg.scores[cg.scores.length-2]:null;
+      const wTc=wL&&wPv?(wL>wPv?'#10b981':wL<wPv?'#ef4444':'#94a3b8'):'#0ea5e9';
+      const cTc=cL&&cPv?(cL>cPv?'#10b981':cL<cPv?'#ef4444':'#94a3b8'):'#22c55e';
+      const wLbl=wL?(wg.single?wL+'점(1회)':(wPv?(wL>wPv?'↑'+(wL-wPv)+'점':'↓'+(wPv-wL)+'점'):'→')+' '+wL+'점'):'';
+      const cLbl=cL?(cg.single?cL+'점(1회)':(cPv?(cL>cPv?'↑'+(cL-cPv)+'점':'↓'+(cPv-cL)+'점'):'→')+' '+cL+'점'):'';
+      growthH='<div style="background:white;border-radius:18px;padding:22px;margin-top:18px;border:1px solid #e8eef8">'
+        +'<div style="font-size:20px;font-weight:800;color:#0d2240;margin-bottom:16px">📈 성장 추이</div>'
+        +'<div style="display:flex;gap:18px;margin-bottom:14px;flex-wrap:wrap">'
+        +(wL?'<div style="display:flex;align-items:center;gap:7px"><div style="width:26px;height:4px;background:#0ea5e9;border-radius:99px"></div><span style="font-size:17px;color:#64748b">전국주간</span><span style="font-size:18px;font-weight:700;color:'+wTc+'">'+wLbl+'</span></div>':'')
+        +(cL?'<div style="display:flex;align-items:center;gap:7px"><div style="width:26px;height:4px;background:#22c55e;border-radius:99px"></div><span style="font-size:17px;color:#64748b">일일</span><span style="font-size:18px;font-weight:700;color:'+cTc+'">'+cLbl+'</span></div>':'')
+        +'</div>'
+        +'<svg width="100%" height="'+GH+'" viewBox="0 0 '+GW+' '+GH+'" preserveAspectRatio="none" style="overflow:visible">'
+        +(wg.pts.length>=2&&!wg.single?'<polyline points="'+wg.pts.join(' ')+'" fill="none" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>':'')
+        +(cg.pts.length>=2&&!cg.single?'<polyline points="'+cg.pts.join(' ')+'" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>':'')
+        +wg.pts.map((pt,i)=>{const xy=pt.split(','),x=xy[0],y=xy[1],cur=i===wg.pts.length-1;return'<circle cx="'+x+'" cy="'+y+'" r="'+(cur?7:4)+'" fill="'+(cur?'#0369a1':'#7dd3fc')+'" stroke="white" stroke-width="2"/><text x="'+x+'" y="'+(Number(y)-13)+'" text-anchor="middle" fill="'+(cur?'#0369a1':'#64748b')+'" font-size="'+(cur?15:12)+'" font-weight="'+(cur?'700':'400')+'" font-family="sans-serif">'+wg.scores[i]+'</text>';}).join('')
+        +cg.pts.map((pt,i)=>{const xy=pt.split(','),x=xy[0],y=xy[1],cur=i===cg.pts.length-1;return'<circle cx="'+x+'" cy="'+y+'" r="'+(cur?7:4)+'" fill="'+(cur?'#15803d':'#86efac')+'" stroke="white" stroke-width="2"/><text x="'+x+'" y="'+(Number(y)+22)+'" text-anchor="middle" fill="'+(cur?'#15803d':'#64748b')+'" font-size="'+(cur?15:12)+'" font-weight="'+(cur?'700':'400')+'" font-family="sans-serif">'+cg.scores[i]+'</text>';}).join('')
+        +'</svg>'
+        +((wg.single||cg.single)?'<div style="font-size:15px;color:#94a3b8;margin-top:8px;text-align:center">💡 2회 이상 기록되면 추이선이 표시됩니다</div>':'')
+        +'</div>';
+    }
+
+    let unitsH='';
+    if((d.units||[]).some(u=>u&&u.name)){
+      unitsH='<div style="background:white;border-radius:18px;padding:22px;margin-top:18px;border:1px solid #e8eef8"><div style="font-size:20px;font-weight:800;color:#0d2240;margin-bottom:18px">📚 단원별 정답률</div>';
+      d.units.filter(u=>u&&u.name).forEach(u=>{const uc=scFn(u.student);unitsH+='<div style="margin-bottom:20px"><div style="display:flex;justify-content:space-between;margin-bottom:9px"><span style="font-size:19px;font-weight:600;color:#334155">'+u.name+'</span><span style="font-size:19px;font-weight:700;color:'+uc+'">'+u.student+'%</span></div><div style="height:16px;background:#f1f5f9;border-radius:99px;overflow:hidden;position:relative">'+(u.avg?'<div style="position:absolute;height:100%;width:'+u.avg+'%;background:#cbd5e1;border-radius:99px"></div>':'')+'<div style="position:absolute;height:100%;width:'+u.student+'%;background:'+uc+';border-radius:99px"></div></div>'+(u.avg?'<div style="font-size:15px;color:#94a3b8;margin-top:5px">학생 '+u.student+'% · 전국평균 '+u.avg+'%</div>':'')+'</div>';});
+      unitsH+='</div>';
+    }
+
+    const sItems=(d.strong||[]).filter(s=>s&&s.topic);
+    const wItems=(d.weak||[]).filter(w=>w&&w.topic);
+    let swH='';
+    if(sItems.length||wItems.length){
+      swH='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px">'
+        +'<div style="background:white;border-radius:18px;padding:20px;border:1px solid #d1fae5"><div style="font-size:18px;font-weight:700;color:#059669;margin-bottom:14px">✨ 우수 유형</div>'+sItems.map(s=>'<div style="display:flex;gap:12px;margin-bottom:14px"><div style="min-width:36px;height:36px;border-radius:9px;background:#ecfdf5;border:1px solid #6ee7b7;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:#059669">'+s.num+'</div><div style="font-size:18px;font-weight:600;color:#334155;line-height:1.4">'+s.topic+'</div></div>').join('')+'</div>'
+        +'<div style="background:white;border-radius:18px;padding:20px;border:1px solid #fee2e2"><div style="font-size:18px;font-weight:700;color:#dc2626;margin-bottom:14px">🎯 집중 보완</div>'+wItems.map(w=>'<div style="display:flex;gap:12px;margin-bottom:14px"><div style="min-width:36px;height:36px;border-radius:9px;background:#fff1f2;border:1px solid #fca5a5;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:#dc2626">'+w.num+'</div><div style="font-size:18px;font-weight:600;color:#334155;line-height:1.4">'+w.topic+'</div></div>').join('')+'</div>'
+        +'</div>';
+    }
+
+    const bvs=(d.behaviors||[]).filter(b=>b&&b.score);
+    let behavH='';
+    if(bvs.length){
+      behavH='<div style="background:white;border-radius:18px;padding:22px;margin-top:18px;border:1px solid #e8eef8"><div style="font-size:20px;font-weight:800;color:#0d2240;margin-bottom:18px">🧠 역량별 분석</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">'+bvs.map(b=>{const bc=gcFn(b.grade);return'<div style="background:#f8fafc;border-radius:14px;padding:18px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span style="font-size:18px;font-weight:600;color:#334155">'+b.name+'</span>'+(b.grade?'<span style="font-size:15px;font-weight:700;background:'+bc+'22;color:'+bc+';padding:4px 11px;border-radius:99px">'+b.grade+'등급</span>':'')+'</div><div style="height:13px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:8px"><div style="height:100%;width:'+b.score+'%;background:'+bc+';border-radius:99px"></div></div><div style="font-size:22px;font-weight:700;color:'+bc+'">'+b.score+'%</div></div>';}).join('')+'</div></div>';
+    }
+
+    const namedItems=(d.items||[]).filter(it=>it&&it.name);
+    let itemsH='';
+    if(namedItems.length){
+      const corrI=namedItems.filter(it=>it.correct),wrongI=namedItems.filter(it=>!it.correct);
+      const iRow=it=>{const ic=scFn(it.score);return'<div style="display:flex;align-items:center;gap:13px;padding:14px 20px;border-bottom:1px solid #f8fafc"><div style="min-width:38px;height:38px;border-radius:10px;background:'+(it.correct?'#ecfdf5':'#fff1f2')+';border:1px solid '+(it.correct?'#6ee7b7':'#fca5a5')+';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:'+(it.correct?'#059669':'#dc2626')+'">'+it.n+'</div><div style="flex:1;font-size:18px;font-weight:500;color:#475569;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+it.name+'</div><div style="width:70px;height:9px;background:#f1f5f9;border-radius:99px;overflow:hidden;flex-shrink:0"><div style="height:100%;width:'+Math.min(100,it.score||0)+'%;background:'+ic+';border-radius:99px"></div></div><span style="font-size:18px;font-weight:700;color:'+ic+';min-width:46px;text-align:right;flex-shrink:0">'+it.score+'%</span></div>';};
+      // ★ <details>/<summary> - JS 완전 불필요, iOS Safari 네이티브 동작
+      itemsH='<div style="background:white;border-radius:18px;margin-top:18px;border:1px solid #e8eef8;overflow:hidden">'
+        +'<div style="padding:20px 22px 15px;border-bottom:1px solid #f1f5f9"><div style="font-size:20px;font-weight:800;color:#0d2240">📝 문항별 상세 결과</div><div style="display:flex;gap:10px;margin-top:12px"><div style="background:#ecfdf5;border-radius:10px;padding:7px 15px;font-size:17px;font-weight:700;color:#059669">정답 '+corrI.length+'문항</div><div style="background:#fff1f2;border-radius:10px;padding:7px 15px;font-size:17px;font-weight:700;color:#dc2626">오답 '+wrongI.length+'문항</div></div></div>'
+        +(wrongI.length
+          ?'<details open style="border-bottom:1px solid #fee2e2"><summary style="padding:16px 22px;background:#fff8f8;display:flex;justify-content:space-between;align-items:center;cursor:pointer;list-style:none;-webkit-appearance:none"><span style="font-size:18px;font-weight:700;color:#dc2626">집중 보완 ('+wrongI.length+'개)</span><span style="font-size:17px;color:#dc2626">▼</span></summary>'+wrongI.map(iRow).join('')+'</details>'
+          :'')
+        +(corrI.length
+          ?'<details style="border-bottom:1px solid #f1f5f9"><summary style="padding:16px 22px;background:#f8fffe;display:flex;justify-content:space-between;align-items:center;cursor:pointer;list-style:none;-webkit-appearance:none"><span style="font-size:18px;font-weight:700;color:#059669">정답 문항 ('+corrI.length+'개)</span><span style="font-size:17px;color:#059669">▼</span></summary>'+corrI.map(iRow).join('')+'</details>'
+          :'')
+        +'</div>';
+    }
+
+    let hwH='';
+    if(d.homework&&d.homework.show&&(d.homework.rows||[]).length){
+      const SS3={풀이:{bg:'#dbeafe',text:'#1d4ed8',bar:'#3b82f6'},채점:{bg:'#fef9c3',text:'#92400e',bar:'#f59e0b'},오답:{bg:'#dcfce7',text:'#15803d',bar:'#22c55e'},아하노트:{bg:'#f3e8ff',text:'#7c3aed',bar:'#a855f7'},없음:{bg:'#f1f5f9',text:'#94a3b8',bar:'#e2e8f0'}};
+      const PS3={100:{bg:'#dcfce7',text:'#15803d'},60:{bg:'#fef9c3',text:'#92400e'},30:{bg:'#dbeafe',text:'#1d4ed8'},0:{bg:'#f1f5f9',text:'#94a3b8'}};
+      hwH='<div style="background:white;border-radius:18px;padding:22px;margin-top:18px;border:1px solid #e8eef8"><div style="font-size:20px;font-weight:800;color:#0d2240;margin-bottom:16px">📓 숙제 완성도</div>'+d.homework.rows.map(r=>{const sv2=SS3[r.stage]||SS3['없음'],pv2=PS3[r.pct]||PS3[0];return'<div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #f8fafc"><span style="font-size:18px;color:#64748b;min-width:90px;flex-shrink:0">'+r.date+'</span><span style="font-size:17px;font-weight:700;padding:6px 14px;border-radius:20px;background:'+sv2.bg+';color:'+sv2.text+';flex-shrink:0">'+r.stage+'</span><div style="flex:1;height:13px;background:#f1f5f9;border-radius:99px;overflow:hidden"><div style="height:100%;width:'+r.pct+'%;background:'+sv2.bar+';border-radius:99px"></div></div><span style="font-size:18px;font-weight:700;padding:5px 13px;border-radius:20px;background:'+pv2.bg+';color:'+pv2.text+';flex-shrink:0">'+r.pct+'%</span></div>';}).join('')+'</div>';
+    }
+
+    const dateFmt=(s=>{const p=String(s||'').split('.');return p.length>=3?p[1].replace(/^0/,'')+'월 '+p[2].replace(/^0/,'')+'일':s;})(d.date);
+
+    return '<div style="background:'+hdrBg+';padding:30px 22px;border-radius:22px;color:white;position:relative;overflow:hidden">'
+      +'<div style="position:absolute;top:-25px;right:-25px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.08)"></div>'
+      +'<div style="font-size:16px;opacity:0.7;letter-spacing:0.5px;margin-bottom:5px">🏫 '+sn+tn+' · ONE REPORT</div>'
+      +'<div style="font-size:32px;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px">'+d.name+' 학습 리포트</div>'
+      +'<div style="font-size:18px;opacity:0.75;margin-bottom:16px">'+d.grade+'</div>'
+      +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'
+      +'<span style="font-size:26px">📅</span>'
+      +'<span style="font-size:36px;font-weight:800;letter-spacing:-0.5px">'+dateFmt+'</span>'
+      +'</div>'
+      +'<div style="display:flex;gap:10px;flex-wrap:wrap">'
+      +(d.testType==='weekly'?'<div style="background:rgba(59,184,255,0.35);border-radius:22px;padding:7px 16px;font-size:17px;font-weight:700">🌐 전국주간테스트</div>':'<div style="background:rgba(16,185,129,0.35);border-radius:22px;padding:7px 16px;font-size:17px;font-weight:700">📝 일일테스트</div>')
+      +(d.bookname?'<div style="background:rgba(255,255,255,0.2);border-radius:22px;padding:7px 16px;font-size:17px;font-weight:600">📖 '+d.bookname+'</div>':'')
+      +'</div></div>'
+      +(d.comment?'<div style="background:linear-gradient(135deg,#0d2240,#1a3564);border-radius:18px;padding:22px;margin-top:18px;color:white"><div style="font-size:15px;font-weight:800;letter-spacing:1px;opacity:0.7;margin-bottom:12px">💬 선생님 총평</div><div style="font-size:19px;line-height:2;opacity:0.95;white-space:pre-wrap">'+d.comment.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div></div>':'')
+      +growthH
+      +'<div style="background:white;border-radius:18px;padding:22px;margin-top:18px;border:1px solid #e8eef8">'
+      +'<div style="font-size:20px;font-weight:800;color:#0d2240;margin-bottom:18px">📊 종합 성적</div>'
+      +'<div style="display:flex;align-items:center;gap:22px">'
+      +'<svg width="130" height="130" viewBox="0 0 130 130"><circle cx="65" cy="65" r="54" fill="none" stroke="#e2e8f0" stroke-width="11"/><circle cx="65" cy="65" r="54" fill="none" stroke="'+gc2+'" stroke-width="11" stroke-dasharray="'+(sv/100)*(2*Math.PI*54)+' '+(2*Math.PI*54)+'" stroke-linecap="round" transform="rotate(-90 65 65)"/><text x="65" y="60" text-anchor="middle" fill="'+gc2+'" font-size="28" font-weight="700" font-family="sans-serif">'+sv+'</text><text x="65" y="82" text-anchor="middle" fill="#94a3b8" font-size="18" font-family="sans-serif">점</text></svg>'
+      +'<div style="flex:1;display:flex;flex-direction:column;gap:13px">'
+      +'<div style="background:#f8fafc;border-radius:14px;padding:14px 18px"><div style="font-size:16px;color:#94a3b8">등급</div><div style="font-size:40px;font-weight:700;color:'+gc2+'">'+(d.level||'-')+'<span style="font-size:22px;font-weight:500">등급</span></div></div>'
+      +(d.rank&&d.total&&d.showRank!==false?'<div style="background:#f8fafc;border-radius:14px;padding:14px 18px"><div style="font-size:16px;color:#94a3b8">전국 등수</div><div style="font-size:24px;font-weight:700;color:#334155"><span style="color:#0ea5e9">'+d.rank+'</span><span style="font-size:17px;color:#94a3b8;font-weight:400">등 / '+d.total+'명</span></div><div style="height:8px;background:#e2e8f0;border-radius:99px;margin-top:7px;overflow:hidden"><div style="height:100%;width:'+(100-rp)+'%;background:#0ea5e9;border-radius:99px"></div></div><div style="font-size:16px;color:#94a3b8;margin-top:5px">상위 '+rp+'%</div></div>':'')
+      +'</div></div>'
+      +(d.avgScore?'<div style="margin-top:16px;background:#f0f9ff;border-radius:14px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:19px;color:#64748b">전국 평균 대비</span><span style="font-size:22px;font-weight:700;color:'+(Number(d.score)>=Number(d.avgScore)?'#16a34a':'#ef4444')+'">'+(Number(d.score)>=Number(d.avgScore)?'▲':'▼')+' '+Math.round(Math.abs(Number(d.score)-Number(d.avgScore)))+'점</span></div>':'')
+      +'</div>'
+      +unitsH+swH+behavH+itemsH+hwH
+      +'<div style="text-align:center;margin-top:22px;font-size:17px;color:#94a3b8">🏫 '+sn+tn+' · Lumen Math Academy</div>';
+  }
+
+  const bodies=reports.map((d,i)=>'<div id="rpt-'+(d.id||i)+'" style="display:'+(i===0?'block':'none')+'">'+buildBody(d)+'</div>').join('');
+  const allIds=JSON.stringify(reports.map((d,i)=>String(d.id||i)));
+  const options=reports.map((d,i)=>'<option value="'+(d.id||i)+'">'+(d.date||'날짜없음')+' · '+(d.score?d.score+'점':'점수없음')+' '+(d.level?d.level+'등급':'')+' '+(d.testType==='weekly'?'🌐':'📝')+'</option>').join('');
+
+  return'<!DOCTYPE html>\n<html lang="ko"><head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n<meta name="apple-mobile-web-app-capable" content="yes">\n<title>'+d0.name+' 학습 리포트 - '+sn+'</title>\n<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">\n<style>\n*{box-sizing:border-box;margin:0;padding:0}\nhtml,body{width:100%;overflow-x:hidden}\nbody{background:#f0f4f8;font-family:\'Noto Sans KR\',\'Apple SD Gothic Neo\',sans-serif;padding:0;min-height:100vh}\n.top-bar{background:#0369a1;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.15)}\n.date-sel{background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.4);border-radius:12px;padding:9px 14px;font-size:17px;font-weight:700;font-family:inherit;outline:none;cursor:pointer;flex:1;max-width:240px}\n.date-sel option{background:#1e3a5f;color:white}\n.nav-btn{background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.4);border-radius:10px;padding:9px 18px;font-size:19px;cursor:pointer;font-family:inherit;font-weight:700;flex-shrink:0}\n.nav-btn:disabled{opacity:0.3}\n.wrap{width:100%;padding:14px 14px 60px}\ndetails>summary{list-style:none;-webkit-appearance:none}\ndetails>summary::-webkit-details-marker{display:none}\n</style>\n</head><body>\n<div class="top-bar">\n  <div style="color:white;flex-shrink:0;min-width:0;flex:1">\n    <div style="font-size:13px;opacity:0.75">🏫 '+sn+' · ONE REPORT</div>\n    <div style="font-size:19px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+d0.name+'</div>\n  </div>\n  <div style="display:flex;align-items:center;gap:8px;margin-left:10px">\n    <button class="nav-btn" id="PB">◀</button>\n    <select class="date-sel" id="DS">'+options+'</select>\n    <button class="nav-btn" id="NB">▶</button>\n  </div>\n</div>\n<div class="wrap">'+bodies+'</div>\n<script>\nvar ids='+allIds+';\nvar cur=0;\nfunction showRpt(id){\n  var pages=document.querySelectorAll(\'[id^="rpt-"]\');\n  for(var i=0;i<pages.length;i++)pages[i].style.display=\'none\';\n  var el=document.getElementById(\'rpt-\'+id);\n  if(el)el.style.display=\'block\';\n  cur=ids.indexOf(id);\n  document.getElementById(\'DS\').value=id;\n  document.getElementById(\'PB\').disabled=(cur<=0);\n  document.getElementById(\'NB\').disabled=(cur>=ids.length-1);\n  window.scrollTo(0,0);\n}\nfunction nav(d){var n=cur+d;if(n>=0&&n<ids.length)showRpt(ids[n]);}\ndocument.getElementById(\'PB\').addEventListener(\'click\',function(){nav(-1);});\ndocument.getElementById(\'NB\').addEventListener(\'click\',function(){nav(1);});\ndocument.getElementById(\'DS\').addEventListener(\'change\',function(){showRpt(this.value);});\ndocument.getElementById(\'PB\').disabled=true;\ndocument.getElementById(\'NB\').disabled=(ids.length<=1);\n<\/script>\n</body></html>';
+}
+async function downloadAllStudents(){
+  const groups=groupStudents();
+  if(!groups.length){alert('저장된 학생이 없습니다');return;}
+  const btn=document.getElementById('bulk-dl-btn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ 다운로드 중...';}
+  let count=0;
+  for(const g of groups){
+    const all=list.filter(r=>r.name===g.name&&r.grade===g.grade)
+      .sort((a,b)=>(b.savedAt||b.date||'').localeCompare(a.savedAt||a.date||''));
+    if(!all.length)continue;
+    const html=all.length>=1?buildMultiReportHTML(all):buildReportHTML(all[0]);
+    const blob=new Blob(['\uFEFF'+html],{type:'text/html;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    const ld2=(all[0]?.date||'').replace(/\./g,'');
+    a.download=`[학부모용]_${g.name}_${ld2}_루멘수학리포트.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+    count++;
+    await new Promise(r=>setTimeout(r,400)); // 브라우저가 각 파일 처리할 시간
+  }
+  if(btn){btn.disabled=false;btn.textContent=`📥 전체 학생 일괄 다운로드 (${groups.length}명)`;}
+  alert(`✅ ${count}명 학생 리포트가 다운로드됐어요!\n다운로드 폴더에서 확인해주세요.`);
+}
+
+
+function downloadStudentReport(){
+  const d=form;
+  if(!d.name){alert('학생 정보를 먼저 입력해주세요');return;}
+  // 학생용: 3등급 이하는 등수 숨김 처리한 복사본
+  let all=list.filter(r=>r.name===d.name&&r.grade===d.grade)
+    .sort((a,b)=>(b.savedAt||b.date||'').localeCompare(a.savedAt||a.date||''));
+  if(!all.find(r=>r.id===d.id)) all=[d,...all];
+  const studentAll=all.map(r=>{
+    const copy=JSON.parse(JSON.stringify(r));
+    if(Number(copy.level)>2) copy.showRank=false; // 3등급↓ 등수 숨김
+    return copy;
+  });
+  const html=studentAll.length>=1?buildMultiReportHTML(studentAll):buildReportHTML(studentAll[0]||d);
+  const blob=new Blob(['\uFEFF'+html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const latestDate=(studentAll[0]?.date||d.date||'').replace(/\./g,'');
+  a.download=`[학생용]_${d.name}_${latestDate}_루멘수학리포트.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadReport(){
+  const d=form;
+  if(!d.name){alert('학생 정보를 먼저 입력해주세요');return;}
+  // 같은 학생의 모든 리포트 수집 (저장된 것 + 현재 편집 중인 것)
+  let all=list.filter(r=>r.name===d.name&&r.grade===d.grade);
+  all.sort((a,b)=>(b.savedAt||b.date||'').localeCompare(a.savedAt||a.date||''));
+  // 현재 편집 중인 데이터가 목록에 없으면 앞에 추가 (저장 안 해도 다운로드 가능)
+  if(!all.find(r=>r.id===d.id)) all=[d,...all];
+  const html=buildMultiReportHTML(all);
+  const blob=new Blob(['\uFEFF'+html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const latestDate=(all[0]?.date||d.date||'').replace(/\./g,'');
+  a.download=`[학부모용]_${d.name}_${latestDate}_루멘수학리포트.html`;
+  a.click();URL.revokeObjectURL(url);
+}
+
+function savePrompt(){
+  const v=document.getElementById('pt')?.value;
+  if(v!==undefined){promptText=v;localStorage.setItem('or_prompt',promptText);}
+  promptSaved=true;render();setTimeout(()=>{promptSaved=false;render();},2000);
+}
+function resetPrompt(){if(!confirm('초기값으로 되돌리시겠습니까?'))return;promptText=DEFAULT_PROMPT;localStorage.setItem('or_prompt',promptText);render();}
+
+function saveGroups(){
+  const raw=document.getElementById('group-input')?.value||'';
+  groupList=raw.split(',').map(s=>s.trim()).filter(Boolean);
+  localStorage.setItem('or_groups',JSON.stringify(groupList));
+  render();
+}
+function addGroupChip(g){
+  sf('group', form.group===g?'':g);  // 같은 거 누르면 해제
+  render();
+}
+
+function saveSchool(){
+  schoolName=document.getElementById('sn')?.value||'루멘수학';
+  teacherName=document.getElementById('tn')?.value||'';
+  localStorage.setItem('or_school',schoolName);localStorage.setItem('or_teacher',teacherName);
+  alert('저장됐습니다!');
+}
+
+/* ── 렌더 ── */
+
+function toggleStudentView(){
+  STUDENT_VIEW=!STUDENT_VIEW;
+  render();
+}
+
+function render(){
+  const C=document.getElementById('CONTENT');
+  const LC=document.getElementById('LIST_CONTENT');
+  const HR=document.getElementById('HDR_R');
+  const RT=document.getElementById('RIGHT_TITLE');
+
+  // 왼쪽 패널: 항상 목록 표시 (데스크탑)
+  if(LC){
+    if(VIEW==='analyzing') LC.innerHTML=rAnalyzing();
+    else LC.innerHTML=rList();
+  }
+
+  // 오른쪽 제목
+  if(RT){
+    const titles={form:`${form.name||'새 학생'} 편집`,preview:'미리보기',share:'공유',settings:'설정',bulk:'✨ 일괄 피드백 생성'};
+    RT.textContent=titles[VIEW]||'학생을 선택해주세요';
+  }
+
+  // 오른쪽 저장 버튼
+  if(HR){
+    HR.innerHTML='';
+    if(VIEW==='form'){
+      HR.innerHTML=`${saveMsg?`<span class="save-msg">${saveMsg}</span>`:''}
+      <button style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;backdrop-filter:blur(4px)" onclick="save()">💾 저장</button>`;
+    }
+  }
+
+  // 오른쪽 패널 / 모바일 전체
+  if(!C)return;
+  if(isDesktop()){
+    // 데스크탑: 오른쪽에 form/preview/share/settings
+    if(VIEW==='list'||VIEW==='analyzing') C.innerHTML=rWelcome();
+    else if(VIEW==='form') C.innerHTML=rForm();
+    else if(VIEW==='preview') C.innerHTML=rPreview();
+    else if(VIEW==='share') C.innerHTML=rShare();
+    else if(VIEW==='bulk') C.innerHTML=rBulk();
+    else C.innerHTML=rSettings();
+  }else{
+    // 모바일: 전체화면 전환
+    if(VIEW==='list') C.innerHTML=rList();
+    else if(VIEW==='analyzing') C.innerHTML=rAnalyzing();
+    else if(VIEW==='form') C.innerHTML=rForm();
+    else if(VIEW==='preview') C.innerHTML=rPreview();
+    else if(VIEW==='share') C.innerHTML=rShare();
+    else if(VIEW==='bulk') C.innerHTML=rBulk();
+    else C.innerHTML=rSettings();
+  }
+  // textarea 높이 자동 조정
+  setTimeout(()=>{const ta=document.getElementById('comment-ta');if(ta)autoResize(ta);},10);
+}
+
+// 데스크탑 오른쪽 패널 기본 화면
+function rWelcome(){
+  return`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px;text-align:center;color:#94a3b8">
+    <div style="font-size:56px;margin-bottom:16px">👈</div>
+    <div style="font-size:16px;font-weight:700;color:#334155;margin-bottom:8px">왼쪽에서 학생을 선택하세요</div>
+    <div style="font-size:13px;line-height:1.7">학생 카드를 클릭하면<br>여기서 편집·미리보기·공유할 수 있어요</div>
+    <button onclick="newStudent()" style="margin-top:24px;padding:13px 32px;background:linear-gradient(135deg,#0d2240 0%,#1d6fe8 100%);color:white;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(29,111,232,0.3);letter-spacing:0.2px">✏️ 새 학생 입력하기</button>
+  </div>`;
+}
+
+// 학생별 그룹핑 (이름+학년 기준)
+function groupStudents(){
+  const map={};
+  const filtered=FILTER_GROUP?list.filter(r=>(r.group||'')===FILTER_GROUP):list;
+  filtered.forEach(r=>{
+    const key=(r.name||'이름없음')+'__'+(r.grade||'');
+    if(!map[key])map[key]={name:r.name||'이름없음',grade:r.grade||'',reports:[]};
+    map[key].reports.push(r);
+  });
+  // 각 그룹 내 날짜순 정렬 (최신이 앞)
+  Object.values(map).forEach(g=>{
+    g.reports.sort((a,b)=>{
+      const da=a.savedAt||a.date||'';
+      const db=b.savedAt||b.date||'';
+      return db.localeCompare(da);
+    });
+  });
+  return Object.values(map);
+}
+
+// 시험 종류별 성장 그래프 (폴더 카드용 미니)
+function makeGrowthChart(reports){
+  const weekly=reports.filter(r=>r.testType==='weekly'&&r.score).reverse();
+  const cls=reports.filter(r=>r.testType!=='weekly'&&r.score).reverse();
+  if(weekly.length<2&&cls.length<2)return'';
+
+  const allScores=[...weekly,...cls].map(r=>Number(r.score));
+  const mn=Math.max(0,Math.min(...allScores)-10);
+  const mx=Math.min(100,Math.max(...allScores)+10);
+  const W=150,H=40,PAD=5;
+
+  function makePts(arr){
+    if(arr.length<2)return{pts:[],scores:[]};
+    const scores=arr.map(r=>Number(r.score));
+    const xStep=(W-PAD*2)/(scores.length-1||1);
+    const yScale=(H-PAD*2)/(mx-mn||1);
+    const pts=scores.map((s,i)=>`${PAD+i*xStep},${H-PAD-(s-mn)*yScale}`);
+    return{pts,scores};
+  }
+
+  const w=makePts(weekly);
+  const c=makePts(cls);
+  const wLatest=w.scores.length?w.scores[w.scores.length-1]:null;
+  const cLatest=c.scores.length?c.scores[c.scores.length-1]:null;
+  const wPrev=w.scores.length>=2?w.scores[w.scores.length-2]:null;
+  const cPrev=c.scores.length>=2?c.scores[c.scores.length-2]:null;
+
+  return`<div style="display:flex;align-items:center;gap:8px;margin-top:7px">
+    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="flex-shrink:0;overflow:visible">
+      ${w.pts.length>=2?`<polyline points="${w.pts.join(' ')}" fill="none" stroke="#0ea5e9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`:''}
+      ${c.pts.length>=2?`<polyline points="${c.pts.join(' ')}" fill="none" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`:''}
+      ${w.pts.map((pt,i)=>{const[x,y]=pt.split(',');const cur=i===w.pts.length-1;return`<circle cx="${x}" cy="${y}" r="${cur?3:2}" fill="${cur?'#0369a1':'#7dd3fc'}"/>`;}).join('')}
+      ${c.pts.map((pt,i)=>{const[x,y]=pt.split(',');const cur=i===c.pts.length-1;return`<circle cx="${x}" cy="${y}" r="${cur?3:2}" fill="${cur?'#15803d':'#86efac'}"/>`;}).join('')}
+    </svg>
+    <div style="font-size:10px;line-height:1.8">
+      ${wLatest?`<div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:2px;background:#0ea5e9;border-radius:99px"></div><span style="color:#64748b">전국주간</span><span style="font-weight:700;color:${wLatest&&wPrev?(wLatest>wPrev?'#10b981':wLatest<wPrev?'#ef4444':'#94a3b8'):'#0369a1'}">${wLatest>wPrev?'↑':wLatest<wPrev?'↓':'→'}${wLatest}점</span></div>`:''}
+      ${cLatest?`<div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:2px;background:#22c55e;border-radius:99px"></div><span style="color:#64748b">일일</span><span style="font-weight:700;color:${cLatest&&cPrev?(cLatest>cPrev?'#10b981':cLatest<cPrev?'#ef4444':'#94a3b8'):'#22c55e'}">${cLatest>cPrev?'↑':cLatest<cPrev?'↓':'→'}${cLatest}점</span></div>`:''}
+    </div>
+  </div>`;
+}
+
+// 숙제 완성도 요약
+function makeHwSummary(reports){
+  const allRows=[];
+  reports.forEach(r=>{
+    if(r.homework?.show&&r.homework?.rows){
+      r.homework.rows.forEach(row=>{
+        if(row.stage!=='없음')allRows.push(row);
+      });
+    }
+  });
+  if(!allRows.length)return'';
+  const cnt={풀이:0,채점:0,오답:0,아하노트:0};
+  allRows.forEach(r=>{if(cnt[r.stage]!==undefined)cnt[r.stage]++;});
+  const total=allRows.length;
+  const done=allRows.filter(r=>r.pct===100).length;
+  return`<div style="display:flex;align-items:center;gap:7px;margin-top:7px;flex-wrap:wrap">
+    <span style="font-size:10px;color:#7c3aed;font-weight:600">📓 숙제 ${total}회</span>
+    <span style="font-size:10px;color:#15803d;background:#dcfce7;padding:2px 7px;border-radius:20px">100% ${done}회</span>
+    ${Object.entries(cnt).filter(([,v])=>v>0).map(([s,v])=>`<span style="font-size:10px;background:${SS[s]?.bg||'#f1f5f9'};color:${SS[s]?.text||'#94a3b8'};padding:2px 7px;border-radius:20px">${s} ${v}</span>`).join('')}
+  </div>`;
+}
+
+
+
+function toggleFolder(key){
+  openFolders[key]=!openFolders[key];
+  render();
+}
+
+function rList(){
+  const groups=groupStudents();
+  let h=`<div style="padding:14px">
+    <!-- 일괄 피드백 → 오른쪽 패널로 이동 -->
+    ${list.length>0?`<button onclick="go('bulk')" style="width:100%;padding:13px 16px;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:2px solid #bae6fd;border-radius:14px;margin-bottom:14px;cursor:pointer;display:flex;align-items:center;gap:10px;font-family:inherit;transition:all 0.15s">
+      <span style="font-size:22px">✨</span>
+      <div style="text-align:left;flex:1">
+        <div style="font-size:13px;font-weight:800;color:#0369a1">일괄 피드백 생성</div>
+        <div style="font-size:11px;color:#64748b;margin-top:1px">${[...new Set(list.map(r=>r.date||'').filter(Boolean))].length}개 날짜 · 총 ${list.length}건 리포트</div>
+      </div>
+      <span style="font-size:12px;color:#0369a1">→</span>
+    </button>`:''}
+    <!-- 그룹 필터 -->
+    ${(()=>{const groups=[...new Set(list.map(r=>r.group||'').filter(Boolean))];return groups.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;padding:10px 12px;background:white;border-radius:12px;border:1.5px solid #e8edf5">
+      <span style="font-size:11px;font-weight:700;color:#0d2240;align-self:center">👥 반 필터</span>
+      <button onclick="FILTER_GROUP='';render()" style="padding:4px 12px;border-radius:20px;border:none;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;background:${FILTER_GROUP===''?'#1d6fe8':'#f1f5f9'};color:${FILTER_GROUP===''?'white':'#475569'}">전체</button>
+      ${groups.map(g=>`<button onclick="FILTER_GROUP='${g}';render()" style="padding:4px 12px;border-radius:20px;border:none;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;background:${FILTER_GROUP===g?'#1d6fe8':'#f1f5f9'};color:${FILTER_GROUP===g?'white':'#475569'}">${g}</button>`).join('')}
+    </div>`:'';})()}
+    <div style="background:linear-gradient(135deg,#5b21b6 0%,#7c3aed 100%);border-radius:16px;padding:15px;margin-bottom:12px;color:white;box-shadow:0 4px 16px rgba(124,58,237,0.28)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✨</div>
+        <div><div style="font-size:13px;font-weight:800;letter-spacing:-0.2px">PDF 자동 분석</div><div style="font-size:11px;opacity:0.8;margin-top:2px">AI가 데이터 추출 + 피드백 자동 작성</div></div>
+      </div>
+      <label style="display:block;background:rgba(255,255,255,0.12);border:1.5px dashed rgba(255,255,255,0.4);border-radius:12px;padding:12px;text-align:center;cursor:pointer;font-size:13px;color:white;font-weight:700;transition:background 0.15s;letter-spacing:0.1px">
+        📁 PDF 파일 선택 (여러 개 가능)
+        <input type="file" accept=".pdf" multiple style="display:none" onchange="onFileChange(this)">
+      </label>
+    </div>
+    <button onclick="newStudent()" style="width:100%;padding:12px;border:1.5px dashed #93c5fd;border-radius:14px;background:#f8fbff;color:#1d6fe8;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:14px;font-family:inherit;transition:all 0.15s">✏️ 직접 입력하기</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <span style="font-size:11px;color:#94a3b8">전체 ${groups.length}명 · 리포트 ${list.length}건</span>
+      ${groups.length>0?`<button id="bulk-dl-btn" onclick="downloadAllStudents()" style="padding:6px 12px;background:linear-gradient(135deg,#0d2240,#1d6fe8);color:white;border:none;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;box-shadow:0 2px 8px rgba(29,111,232,0.25)">📥 전체 일괄 다운로드</button>`:''}
+    </div>`;
+
+  if(!groups.length){
+    h+=`<div style="text-align:center;padding:40px 20px;color:#94a3b8">
+      <div style="font-size:40px;margin-bottom:10px">📋</div>
+      <div style="font-size:14px;font-weight:700;color:#334155;margin-bottom:5px">저장된 리포트가 없습니다</div>
+      <div style="font-size:12px">PDF 업로드 또는 직접 입력해보세요</div>
+    </div>`;
+  }else{
+    groups.forEach(g=>{
+      const key=g.name+'__'+g.grade;
+      const isOpen=!!openFolders[key];
+      const latest=g.reports[0];
+      const gc=latest?.level?GC(latest.level):'#94a3b8';
+      const hasFeedback=g.reports.some(r=>r.comment);
+      const hasHw=g.reports.some(r=>r.homework?.show&&r.homework?.rows?.some(rw=>rw.stage!=='없음'));
+      const scores=g.reports.filter(r=>r.score).map(r=>Number(r.score));
+      const avgScore=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;
+
+      // 폴더 헤더
+      h+=`<div style="background:white;border:1.5px solid ${isOpen?'#3b84f7':'#e8edf5'};border-radius:16px;margin-bottom:10px;overflow:hidden;transition:all 0.2s;box-shadow:${isOpen?'0 4px 16px rgba(29,111,232,0.1)':'0 1px 4px rgba(13,34,64,0.05)'}">
+        <div onclick="toggleFolder('${key}')" style="padding:14px 15px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap">
+              <span style="font-size:16px">${isOpen?'📂':'📁'}</span>
+              <span style="font-size:15px;font-weight:800;color:#0d2240;letter-spacing:-0.3px">${g.name}</span>
+              <span style="font-size:10px;background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:20px;font-weight:600">${g.grade}</span>
+              ${g.reports[0]?.group?`<span style="font-size:10px;background:#eff6ff;color:#1d6fe8;padding:2px 8px;border-radius:20px;font-weight:700;border:1px solid #bfdbfe">👥 ${g.reports[0].group}</span>`:''}
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">
+              <span style="font-size:10px;color:#64748b">📋 ${g.reports.length}회 진단</span>
+              ${g.reports.filter(r=>r.testType==='weekly').length?`<span style="font-size:10px;background:#e0f2fe;color:#0369a1;padding:2px 7px;border-radius:20px;font-weight:700">전국 ${g.reports.filter(r=>r.testType==='weekly').length}회</span>`:''}
+              ${g.reports.filter(r=>r.testType!=='weekly').length?`<span style="font-size:10px;background:#f0fdf4;color:#059669;padding:2px 7px;border-radius:20px;font-weight:700">수업 ${g.reports.filter(r=>r.testType!=='weekly').length}회</span>`:''}
+              ${avgScore?`<span class="badge" style="background:#e0f2fe;color:#0369a1">평균 ${avgScore}점</span>`:''}
+              ${latest?.level?`<span class="badge" style="background:${gc}22;color:${gc}">최근 ${latest.level}등급</span>`:''}
+              ${hasFeedback?`<span class="badge" style="background:#f0fdf4;color:#059669">💬 피드백</span>`:''}
+              ${hasHw?`<span class="badge" style="background:#f5f3ff;color:#7c3aed">📓 숙제</span>`:''}
+            </div>
+            ${g.reports.length>=2?makeGrowthChart(g.reports):''}
+            ${hasHw?makeHwSummary(g.reports):''}
+          </div>
+          <div style="font-size:14px;color:#94a3b8;margin-left:8px;flex-shrink:0;margin-top:2px">${isOpen?'▲':'▼'}</div>
+        </div>`;
+
+      // 펼쳐진 상태: 리포트 목록
+      if(isOpen){
+        h+=`<div style="border-top:1px solid #f1f5f9;padding:8px 10px;background:#f8fafc">`;
+        g.reports.forEach(r=>{
+          const gc2=r.level?GC(r.level):'#94a3b8';
+          h+=`<div style="background:white;border:1.5px solid #edf2f9;border-radius:12px;padding:11px 13px;margin-bottom:7px;box-shadow:0 1px 4px rgba(13,34,64,0.04)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+              <div>
+                <div style="font-size:12px;font-weight:600;color:#1e293b">${r.date||''}</div>
+                ${r.bookname?`<div style="font-size:10px;color:#94a3b8;margin-top:1px">📖 ${r.bookname}</div>`:''}
+                <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:5px">
+                  ${r.testType==='weekly'?`<span style="font-size:10px;background:#e0f2fe;color:#0369a1;padding:2px 7px;border-radius:20px;font-weight:700">🌐 전국</span>`:`<span style="font-size:10px;background:#f0fdf4;color:#059669;padding:2px 7px;border-radius:20px;font-weight:700">📝 수업</span>`}
+                  ${r.score?`<span class="badge" style="background:#e0f2fe;color:#0369a1">📊 ${r.score}점</span>`:''}
+                  ${r.level?`<span class="badge" style="background:${gc2}22;color:${gc2}">${r.level}등급</span>`:''}
+                  ${r.comment?`<span class="badge" style="background:#f0fdf4;color:#059669">💬</span>`:
+                    `<span class="badge" style="background:#fef9c3;color:#d97706">피드백없음</span>`}
+                </div>
+              </div>
+              <button onclick="event.stopPropagation();delStudent('${r.id}')" style="background:#fff1f2;border:none;border-radius:6px;padding:3px 8px;font-size:10px;color:#dc2626;cursor:pointer;font-family:inherit;flex-shrink:0">삭제</button>
+            </div>
+            <div style="display:flex;gap:5px">
+              <button onclick="event.stopPropagation();loadStudent('${r.id}')" style="flex:1;padding:7px;border:1.5px solid #e2e8f0;border-radius:9px;background:white;font-size:11px;cursor:pointer;font-family:inherit;color:#475569;font-weight:700">✏️ 편집</button>
+              <button onclick="event.stopPropagation();loadAndPreview('${r.id}')" style="flex:1;padding:7px;border:none;border-radius:9px;background:linear-gradient(135deg,#1d6fe8,#3b84f7);color:white;font-size:11px;cursor:pointer;font-family:inherit;font-weight:700">👁 미리보기</button>
+              <button onclick="event.stopPropagation();loadAndShare('${r.id}')" style="flex:1;padding:7px;border:none;border-radius:9px;background:linear-gradient(135deg,#059669,#10b981);color:white;font-size:11px;cursor:pointer;font-family:inherit;font-weight:700">📤 공유</button>
+            </div>
+          </div>`;
+        });
+        h+=`<div style="display:flex;gap:6px;margin-top:4px">
+          <button onclick="event.stopPropagation();newStudentPreset('${g.name}','${g.grade}')" style="flex:1;padding:8px;border:1px dashed #bae6fd;border-radius:10px;background:transparent;color:#0369a1;font-size:11px;cursor:pointer;font-family:inherit;font-weight:700">✏️ 새 리포트</button>
+          <button onclick="event.stopPropagation();copyFromRecent('${g.name}','${g.grade}')" style="flex:1;padding:8px;border:none;border-radius:10px;background:linear-gradient(135deg,#eff6ff,#dbeafe);color:#1d6fe8;font-size:11px;cursor:pointer;font-family:inherit;font-weight:700" title="이전 리포트의 단원·역량 항목을 복사해서 시작합니다">📋 이전에서 복사</button>
+        </div>
+        </div>`;
+      }
+      h+=`</div>`;
+    });
+  }
+  return h+`</div>`;
+}
+
+function rAnalyzing(){
+  const done=pdfStatus.filter(q=>q.st==='done').length;
+  const err=pdfStatus.filter(q=>q.st==='err').length;
+  const total=pdfStatus.length;
+  const finished=done+err;
+  const pct=total?Math.round((finished/total)*100):0;
+  const allDone=finished===total&&!pdfProcessing;
+  let h=`<div style="padding:14px">
+    <div class="prog-box" style="border-left:3px solid #1d6fe8">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        ${!allDone?`<svg width="16" height="16" viewBox="0 0 16 16" class="spin"><circle cx="8" cy="8" r="6" fill="none" stroke="#e0f2fe" stroke-width="2.5"/><path d="M8 2 A6 6 0 0 1 14 8" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round"/></svg>`:''}
+        <div style="font-size:14px;font-weight:700">${allDone?(err===total?'⚠️ 오류 발생':'✅ 분석 완료!'):'✨ PDF 분석 중...'}</div>
+      </div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:6px">${allDone?`${done}개 완료${err?' · '+err+'개 오류':''}`:`${finished} / ${total} · 파일당 15~30초 소요`}</div>
+      <div class="prog-bar-wrap"><div class="prog-bar-fill" style="width:${pct}%"></div></div>
+      <div style="font-size:11px;color:#0ea5e9;text-align:right;font-weight:700">${pct}%</div>
+    </div>
+    <div style="background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px">`;
+  pdfStatus.forEach((q,i)=>{
+    const icon=q.st==='proc'?`<svg width="15" height="15" viewBox="0 0 16 16" class="spin"><circle cx="8" cy="8" r="6" fill="none" stroke="#e0f2fe" stroke-width="2.5"/><path d="M8 2 A6 6 0 0 1 14 8" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round"/></svg>`:q.st==='done'?'<span style="color:#10b981;font-size:14px;font-weight:700">✓</span>':q.st==='err'?'<span style="color:#ef4444;font-size:14px">✗</span>':'<span style="color:#cbd5e1;font-size:12px">○</span>';
+    const color=q.st==='done'?'#10b981':q.st==='err'?'#ef4444':q.st==='proc'?'#7c3aed':'#94a3b8';
+    const label=q.st==='wait'?'대기':q.st==='proc'?'분석 중':q.st==='done'?'완료':'오류';
+    const border=i<pdfStatus.length-1?'border-bottom:1px solid #f8fafc':'';
+    h+=`<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;${border}">
+      <div style="width:18px;text-align:center;flex-shrink:0">${icon}</div>
+      <div style="flex:1;min-width:0"><div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${q.name}</div>${q.err?`<div style="font-size:10px;color:#ef4444;margin-top:2px">${q.err}</div>`:''}</div>
+      <div style="font-size:11px;color:${color};font-weight:700;flex-shrink:0">${label}</div>
+    </div>`;
+  });
+  h+=`</div>`;
+  if(allDone){
+    h+=`<button style="width:100%;padding:14px;background:linear-gradient(135deg,#0d2240,#1d6fe8);color:white;border:none;border-radius:var(--r);font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:8px;box-shadow:0 4px 16px rgba(29,111,232,0.3);letter-spacing:0.2px" onclick="pdfStatus=[];go('list')">📋 학생 목록 보기 (${done}명)</button>`;
+    if(err>0)h+=`<div class="wbox">⚠️ 오류 파일은 이미지형 PDF이거나 API 키 문제일 수 있어요</div>`;
+  }else{
+    h+=`<div class="ibox">⏱ 창을 닫지 마세요 · 완료되면 자동으로 목록에 추가돼요</div>`;
+  }
+  return h+`</div>`;
+}
+
+function rForm(){
+  const tabs=[["basic","👤 기본"],["units","📚 단원"],["behavior","🧠 역량"],["strong","⭐ 유형"],["items","📝 문항"],["hw","📓 숙제"],["comment","💬 총평"]];
+  let h=`<div class="tbar">`;
+  tabs.forEach(([t,l])=>h+=`<button class="tb${FT===t?' on':''}" onclick="FT='${t}';render()">${l}</button>`);
+  h+=`</div><div class="fb">`;
+  const d=form;
+
+  if(FT==='basic'){
+    h+=`<div class="st">기본 정보</div>
+    <div class="g2"><div class="f"><label>학생 이름 *</label><input value="${d.name}" oninput="sf('name',this.value)" placeholder="홍길동"></div>
+    <div class="f"><label>학년</label><select onchange="sf('grade',this.value)">${GRADE_NAMES.map(g=>`<option${d.grade===g?' selected':''}>${g}</option>`).join('')}</select></div></div>
+    <div class="f"><label>진단일</label><input value="${d.date}" oninput="sf('date',this.value)"></div>
+    <div class="f"><label>교재/시험명 (선택)</label><input value="${d.bookname||''}" oninput="sf('bookname',this.value)" placeholder="쎈 - 초등수학6-1 29-46p"></div>
+    <div class="g2"><div class="f"><label>점수</label><input type="number" value="${d.score}" oninput="sf('score',this.value)" placeholder="90"></div>
+    <div class="f"><label>등급</label><input type="number" value="${d.level}" oninput="sf('level',this.value)" placeholder="1"></div></div>
+    <div class="g2">
+      <div class="f"><label>🎯 목표 점수</label><input type="number" value="${d.targetScore||''}" oninput="sf('targetScore',this.value)" placeholder="95" min="0" max="100"></div>
+      <div class="f">
+        <label>👥 반 선택</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:2px">
+          ${groupList.map(g=>`<button type="button" onclick="addGroupChip('${g}')"
+            style="padding:6px 14px;border-radius:20px;border:1.5px solid ${d.group===g?'#1d6fe8':'#e2e8f0'};
+            background:${d.group===g?'#1d6fe8':'white'};color:${d.group===g?'white':'#475569'};
+            font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s">${g}</button>`).join('')}
+          ${groupList.length===0?'<span style="font-size:12px;color:#94a3b8">⚙️ 설정에서 반을 먼저 등록해주세요</span>':''}
+        </div>
+        ${d.group?`<div style="font-size:11px;color:#1d6fe8;margin-top:5px;font-weight:600">✅ 선택됨: ${d.group}</div>`:''}
+      </div>
+    </div>
+
+    <!-- 전국등수 토글 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:#f8fafc;border-radius:var(--r);margin-bottom:10px;border:1px solid var(--border)">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#1e293b">전국 등수 표시</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">${d.showRank!==false?'✅ 학부모 리포트에 표시됩니다':'🙈 학부모 리포트에서 숨겨집니다'}</div>
+      </div>
+      <button class="toggle ${d.showRank!==false?'on':'off'}" onclick="toggleRank()"></button>
+    </div>
+
+    <div class="g3"><div class="f"><label>등수</label><input type="number" value="${d.rank}" oninput="sf('rank',this.value)"></div>
+    <div class="f"><label>전체 인원</label><input type="number" value="${d.total}" oninput="sf('total',this.value)"></div>
+    <div class="f"><label>전국 평균</label><input type="number" value="${d.avgScore}" oninput="sf('avgScore',this.value)"></div></div>`;
+  }
+  if(FT==='units'){
+    h+=`<div class="st">단원별 정답률</div>`;
+    d.units.forEach((u,i)=>{h+=`<div class="uc"><div style="font-size:11px;color:#64748b;margin-bottom:7px">단원 ${i+1}</div>
+      <div class="f"><label>단원명</label><input value="${u.name||''}" oninput="sa('units',${i},'name',this.value)"></div>
+      <div class="g2" style="margin-bottom:0"><div class="f"><label>학생(%)</label><input type="number" value="${u.student||''}" oninput="sa('units',${i},'student',this.value)"></div>
+      <div class="f"><label>전국평균(%)</label><input type="number" value="${u.avg||''}" oninput="sa('units',${i},'avg',this.value)"></div></div></div>`;});
+    h+=`<button style="width:100%;padding:10px;border:1px dashed #bae6fd;border-radius:var(--r);background:transparent;color:#0369a1;font-size:12px;cursor:pointer;font-family:inherit" onclick="form.units.push({name:'',student:'',avg:''});render()">+ 단원 추가</button>`;
+  }
+  if(FT==='behavior'){
+    h+=`<div class="st">행동 역량별 성취율</div>`;
+    d.behaviors.forEach((b,i)=>{h+=`<div class="uc"><div style="font-size:12px;font-weight:700;color:#1e293b;margin-bottom:7px">${b.name}</div>
+      <div class="g2" style="margin-bottom:0"><div class="f"><label>성취율(%)</label><input type="number" value="${b.score||''}" oninput="sa('behaviors',${i},'score',this.value)"></div>
+      <div class="f"><label>등급</label><input type="number" value="${b.grade||''}" oninput="sa('behaviors',${i},'grade',this.value)"></div></div></div>`;});
+  }
+  if(FT==='strong'){
+    h+=`<div class="st" style="color:#059669;border-color:#d1fae5">✨ 우수 유형</div>`;
+    d.strong.forEach((x,i)=>{h+=`<div class="uc" style="border:1px solid #d1fae5"><div class="g2" style="margin-bottom:7px">
+      <div class="f"><label>문항번호</label><input type="number" value="${x.num||''}" oninput="sa('strong',${i},'num',this.value)"></div>
+      <div class="f"><label>유형명</label><input value="${x.topic||''}" oninput="sa('strong',${i},'topic',this.value)"></div></div>
+      <div class="f" style="margin-bottom:0"><label>부제</label><input value="${x.sub||''}" oninput="sa('strong',${i},'sub',this.value)"></div></div>`;});
+    h+=`<div class="st" style="color:#dc2626;border-color:#fee2e2;margin-top:12px">🎯 취약 유형</div>`;
+    d.weak.forEach((x,i)=>{h+=`<div class="uc" style="border:1px solid #fee2e2"><div class="g2" style="margin-bottom:7px">
+      <div class="f"><label>문항번호</label><input type="number" value="${x.num||''}" oninput="sa('weak',${i},'num',this.value)"></div>
+      <div class="f"><label>유형명</label><input value="${x.topic||''}" oninput="sa('weak',${i},'topic',this.value)"></div></div>
+      <div class="f" style="margin-bottom:0"><label>부제</label><input value="${x.sub||''}" oninput="sa('weak',${i},'sub',this.value)"></div></div>`;});
+  }
+  if(FT==='items'){
+    h+=`<div class="st">문항별 상세</div><div class="ibox">💡 문항명 비우면 숨김 · ✅❌ 클릭으로 정오 변경</div>`;
+    d.items.forEach((it,i)=>{h+=`<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px;background:white;border-radius:var(--r);padding:7px 9px;border:1px solid var(--border)">
+      <div style="width:24px;height:24px;border-radius:5px;background:${it.correct?'#f0fdf4':'#fff1f2'};border:1px solid ${it.correct?'#86efac':'#fca5a5'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:${it.correct?'#16a34a':'#dc2626'};flex-shrink:0">${i+1}</div>
+      <input style="flex:3;border:1px solid var(--border);border-radius:6px;padding:4px 7px;font-size:11px;background:white;color:#1e293b;font-family:inherit;outline:none" value="${it.name||''}" oninput="sa('items',${i},'name',this.value)" placeholder="${i+1}번">
+      <input style="width:48px;border:1px solid var(--border);border-radius:6px;padding:4px 5px;font-size:11px;text-align:center;background:white;color:#1e293b;font-family:inherit;outline:none" type="number" value="${it.score||''}" oninput="sa('items',${i},'score',this.value)" placeholder="%">
+      <button style="width:30px;height:30px;border-radius:6px;border:none;cursor:pointer;font-size:13px;flex-shrink:0;background:${it.correct?'#f0fdf4':'#fff1f2'}" onclick="sa('items',${i},'correct',${!it.correct});render()">${it.correct?'✅':'❌'}</button>
+    </div>`;});
+  }
+  if(FT==='hw'){
+    const hw=d.homework;
+    h+=`<div class="st">📓 숙제 완성도</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#f8fafc;border-radius:var(--r);margin-bottom:12px;border:1px solid var(--border)">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#1e293b">학부모에게 보이기</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">${hw.show?'✅ 미리보기·공유 파일에 표시됩니다':'🙈 학부모에게 숨겨집니다'}</div>
+      </div>
+      <button class="toggle ${hw.show?'on':'off'}" onclick="toggleHwShow()"></button>
+    </div>`;
+    hw.rows.forEach((r,i)=>{
+      const ss=SS[r.stage]||SS['없음'];const ps=PS[r.pct]||PS[0];
+      h+=`<div class="hw-row">
+        <input class="hw-date" value="${r.date}" onchange="shr(${i},'date',this.value)">
+        <select class="ss" style="background:${ss.bg};color:${ss.text}" onchange="shr(${i},'stage',this.value)">${STAGES.map(s=>`<option value="${s}"${s===r.stage?' selected':''}>${s}</option>`).join('')}</select>
+        <div class="bar-bg"><div class="bar-fg" style="width:${r.pct}%;background:${ss.bar}"></div></div>
+        <select class="ps" style="background:${ps.bg};color:${ps.text}" onchange="shr(${i},'pct',Number(this.value))">${PCTS.map(p=>`<option value="${p}"${p===r.pct?' selected':''}>${p}%</option>`).join('')}</select>
+        <button onclick="delHwRow(${i})" style="width:20px;height:20px;border-radius:50%;border:none;background:#f1f5f9;color:#94a3b8;font-size:13px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">×</button>
+      </div>`;
+    });
+    h+=`<button style="width:100%;padding:9px;border:1px dashed #e2e8f0;border-radius:var(--r);background:transparent;color:#94a3b8;font-size:12px;cursor:pointer;margin-top:8px;font-family:inherit" onclick="addHwRow()">+ 날짜 추가</button>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:12px;padding:10px 12px;background:#f8fafc;border-radius:var(--r)">
+      ${Object.entries(SS).filter(([k])=>k!=='없음').map(([s,v])=>`<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:${v.bg};color:${v.text};font-weight:700">${s}</span>`).join('')}
+    </div>`;
+  }
+  if(FT==='comment'){
+    h+=`<div class="st">💬 선생님 총평</div>`;
+    
+    <!-- 선생님 메모 입력 -->
+    h+=`<div style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-radius:var(--r);padding:12px;margin-bottom:10px;border-left:3px solid #7c3aed">
+      <div style="font-size:11px;font-weight:800;color:#6d28d9;margin-bottom:6px;letter-spacing:0.3px">📝 선생님 메모 (AI에 전달할 핵심 내용)</div>
+      <div style="font-size:10px;color:#7c3aed;opacity:0.8;margin-bottom:8px;line-height:1.6">수업 중 특이사항, 칭찬 포인트, 주의할 점 등을 짧게 적어주세요.<br>AI가 이 내용을 반영해서 피드백을 작성합니다.</div>
+      <textarea id="teacher-memo-ta" oninput="sf('teacherMemo',this.value)"
+        placeholder="예) 오늘 지수법칙 문제에서 실수가 많았음. 집에서 반복 연습 필요. 태도는 매우 좋았고 질문도 적극적으로 함."
+        style="width:100%;border:1.5px solid #c4b5fd;border-radius:9px;padding:9px 11px;font-size:12px;background:white;color:#1e293b;font-family:inherit;outline:none;resize:vertical;min-height:80px;line-height:1.7;transition:border-color 0.15s"
+        onfocus="this.style.borderColor='#7c3aed'"
+        onblur="this.style.borderColor='#c4b5fd'"
+      >${d.teacherMemo||''}</textarea>
+    </div>`;
+    
+    if(fbLoading){
+      h+=`<div class="ai-ing"><svg width="13" height="13" viewBox="0 0 14 14" class="spin"><circle cx="7" cy="7" r="5" fill="none" stroke="#ddd6fe" stroke-width="2"/><path d="M7 2 A5 5 0 0 1 12 7" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/></svg>AI가 선생님 메모를 반영해 피드백 작성 중...</div>`;
+    }else{
+      h+=`<button class="aibtn" onclick="genFeedback()">✨ AI 피드백 생성 ${d.teacherMemo?'(메모 반영)':''}</button>`;
+    }
+    h+=`<div class="ibox">💡 메모가 있으면 AI가 그 내용을 우선 반영해요 · 생성 후 직접 수정 가능</div>
+    <div class="f"><textarea id="comment-ta" oninput="sf('comment',this.value);autoResize(this)" placeholder="학부모에게 전달할 맞춤 피드백..." style="min-height:380px;font-size:14px;line-height:1.8;overflow:hidden;resize:none">${d.comment||''}</textarea></div>
+    <div style="font-size:11px;color:#94a3b8;text-align:right">${(d.comment||'').length}자</div>`;
+  }
+  h+=`<div class="btns"><button class="pbtn" onclick="save()">💾 저장하기</button><button class="obtn" onclick="go('preview')">👁 미리보기</button></div></div>`;
+  return h;
+}
+
+function buildPreviewGrowthChart(reports){
+  const weekly=reports.filter(r=>r.testType==='weekly'&&r.score);
+  const cls=reports.filter(r=>r.testType!=='weekly'&&r.score);
+  if(weekly.length<2&&cls.length<2)return'';
+
+  // 전체 점수 범위 계산 (두 라인 공통 축)
+  const allScores=[...weekly,...cls].map(r=>Number(r.score));
+  const mn=Math.max(0,Math.min(...allScores)-15);
+  const mx=Math.min(100,Math.max(...allScores)+15);
+  const W=320,H=90,PAD=14;
+
+  function makePts(arr){
+    if(arr.length<2)return{pts:[],scores:[]};
+    const scores=arr.map(r=>Number(r.score));
+    const xStep=(W-PAD*2)/(scores.length-1||1);
+    const yScale=(H-PAD*2-14)/(mx-mn||1);
+    const pts=scores.map((s,i)=>`${PAD+i*xStep},${H-PAD-14-(s-mn)*yScale}`);
+    return{pts,scores};
+  }
+
+  const w=makePts(weekly);
+  const c=makePts(cls);
+
+  // 두 라인 합친 SVG
+  const wLatest=w.scores.length?w.scores[w.scores.length-1]:null;
+  const wPrev=w.scores.length>=2?w.scores[w.scores.length-2]:null;
+  const cLatest=c.scores.length?c.scores[c.scores.length-1]:null;
+  const cPrev=c.scores.length>=2?c.scores[c.scores.length-2]:null;
+
+  const wTrend=wLatest&&wPrev?(wLatest>wPrev?`↑${wLatest-wPrev}`:wLatest<wPrev?`↓${wPrev-wLatest}`:'→'):'';
+  const cTrend=cLatest&&cPrev?(cLatest>cPrev?`↑${cLatest-cPrev}`:cLatest<cPrev?`↓${cPrev-cLatest}`:'→'):'';
+  const wTc=wLatest&&wPrev?(wLatest>wPrev?'#10b981':wLatest<wPrev?'#ef4444':'#94a3b8'):'#0ea5e9';
+  const cTc=cLatest&&cPrev?(cLatest>cPrev?'#10b981':cLatest<cPrev?'#ef4444':'#94a3b8'):'#22c55e';
+
+  const svgLines=[
+    w.pts.length>=2?`<polyline points="${w.pts.join(' ')}" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`:'',
+    c.pts.length>=2?`<polyline points="${c.pts.join(' ')}" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`:'',
+    ...w.pts.map((pt,i)=>{const[x,y]=pt.split(',');const cur=i===w.pts.length-1;
+      return`<circle cx="${x}" cy="${y}" r="${cur?5:3}" fill="${cur?'#0369a1':'#7dd3fc'}"/>
+      <text x="${x}" y="${Number(y)-8}" text-anchor="middle" fill="${cur?'#0369a1':'#64748b'}" font-size="${cur?11:9}" font-weight="${cur?'700':'400'}" font-family="sans-serif">${w.scores[i]}</text>`;}),
+    ...c.pts.map((pt,i)=>{const[x,y]=pt.split(',');const cur=i===c.pts.length-1;
+      return`<circle cx="${x}" cy="${y}" r="${cur?5:3}" fill="${cur?'#15803d':'#86efac'}"/>
+      <text x="${x}" y="${Number(y)+16}" text-anchor="middle" fill="${cur?'#15803d':'#64748b'}" font-size="${cur?11:9}" font-weight="${cur?'700':'400'}" font-family="sans-serif">${c.scores[i]}</text>`;}),
+  ].join('');
+
+  return`<div style="background:white;border-radius:14px;padding:14px;margin-top:12px;border:1px solid #e8eef8">
+    <div style="font-size:12px;font-weight:700;color:#0369a1;margin-bottom:10px">📈 성장 추이</div>
+    <div style="display:flex;gap:12px;margin-bottom:8px">
+      ${w.scores.length>=2?`<div style="display:flex;align-items:center;gap:5px"><div style="width:20px;height:3px;background:#0ea5e9;border-radius:99px"></div><span style="font-size:11px;color:#64748b">전국주간</span><span style="font-size:11px;font-weight:700;color:${wTc}">${wTrend} ${wLatest}점</span></div>`:''}
+      ${c.scores.length>=2?`<div style="display:flex;align-items:center;gap:5px"><div style="width:20px;height:3px;background:#22c55e;border-radius:99px"></div><span style="font-size:11px;color:#64748b">일일테스트</span><span style="font-size:11px;font-weight:700;color:${cTc}">${cTrend} ${cLatest}점</span></div>`:''}
+    </div>
+    <svg width="100%" height="${H}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="display:block;overflow:visible">
+      ${svgLines}
+    </svg>
+  </div>`;
+}
+
+function makeDateDropdown(currentId){
+  const d=form;
+  if(!d.name)return'';
+  const same=list.filter(r=>r.name===d.name&&r.grade===d.grade)
+    .sort((a,b)=>(b.savedAt||b.date||'').localeCompare(a.savedAt||a.date||''));
+  if(same.length<=1)return'';
+  const opts=same.map(r=>`<option value="${r.id||''}"${r.id===currentId?' selected':''}>${r.date||'날짜없음'} · ${r.score||'-'}점 ${r.level||''}등급 ${r.testType==='weekly'?'🌐':'📝'}</option>`).join('');
+  return`<div style="background:#fef9c3;padding:9px 13px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#92400e;flex-shrink:0;gap:8px">
+    <span style="font-weight:600">📅 ${same.length}회 기록</span>
+    <select onchange="loadAndPreview(this.value)" style="flex:1;max-width:260px;border:1px solid #fcd34d;border-radius:8px;padding:5px 10px;font-size:12px;background:white;color:#334155;font-family:inherit;outline:none;cursor:pointer">${opts}</select>
+    <div style="display:flex;gap:4px">
+      <button onclick="navigatePreview(-1)" style="background:#d97706;color:white;border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit;font-weight:700;font-size:13px">◀</button>
+      <button onclick="navigatePreview(1)" style="background:#d97706;color:white;border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit;font-weight:700;font-size:13px">▶</button>
+    </div>
+  </div>`;
+}
+
+function navigatePreview(dir){
+  const d=form;if(!d.name)return;
+  const same=list.filter(r=>r.name===d.name&&r.grade===d.grade)
+    .sort((a,b)=>(b.savedAt||b.date||'').localeCompare(a.savedAt||a.date||''));
+  const idx=same.findIndex(r=>r.id===d.id);
+  const next=idx+dir;
+  if(next>=0&&next<same.length)loadAndPreview(same[next].id);
+}
+
+function rPreview(){
+  const d=form;
+  if(!d.name)return`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 20px;text-align:center;color:#94a3b8;min-height:400px">
+    <div style="font-size:48px;margin-bottom:14px">👁</div>
+    <div style="font-size:16px;font-weight:700;color:#334155;margin-bottom:8px">미리볼 리포트가 없습니다</div>
+    <div style="font-size:13px;margin-bottom:20px;line-height:1.7">왼쪽 목록에서 학생을 선택하거나<br>✏️ 입력 탭에서 데이터를 입력해주세요</div>
+    <button style="padding:10px 24px;background:#0ea5e9;color:white;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit" onclick="go('list')">목록으로</button>
+  </div>`;
+  const sv=Number(d.score)||0,rp=d.total?Math.round((Number(d.rank)/Number(d.total))*100):0;
+  const circ=2*Math.PI*40,dash=(sv/100)*circ;
+  const hs=(d.strong||[]).filter(s=>s&&s.topic);
+  const hw=(d.weak||[]).filter(w=>w&&w.topic);
+  const behaviors=(d.behaviors||[]);
+  const items=(d.items||[]);
+  const units=(d.units||[]);
+
+  // 같은 학생의 전체 기록으로 성장 그래프 생성
+  const allReports=list.filter(r=>r.name===d.name&&r.grade===d.grade)
+    .sort((a,b)=>(a.savedAt||a.date||'').localeCompare(b.savedAt||b.date||''));
+  const growthH=buildPreviewGrowthChart(allReports);
+  const dateNav=makeDateDropdown(d.id);
+
+  let h=`${dateNav}<div class="pvbanner" style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;background:${STUDENT_VIEW?'linear-gradient(135deg,#ecfdf5,#d1fae5)':'linear-gradient(135deg,#fffbeb,#fef3c7)'};border-bottom:1px solid ${STUDENT_VIEW?'#6ee7b7':'#fde68a'}">
+    <span style="font-size:11px;font-weight:600">${STUDENT_VIEW?'👨‍🎓 학생 보기 모드':'👆 학부모에게 전달될 화면'}</span>
+    <div style="display:flex;gap:6px">
+      <button onclick="toggleStudentView()" style="background:${STUDENT_VIEW?'#1d6fe8':'white'};color:${STUDENT_VIEW?'white':'#1d6fe8'};border:1px solid #1d6fe8;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;font-weight:700;transition:all 0.15s">${STUDENT_VIEW?'👨‍🎓 학생 모드 ON':'👨‍🎓 학생에게 보여주기'}</button>
+      <button style="background:white;border:1px solid #d97706;border-radius:6px;padding:4px 10px;font-size:11px;color:#d97706;cursor:pointer;font-family:inherit;font-weight:600" onclick="FT='comment';go('form')">✏️ 총평 수정</button>
+    </div>
+  </div>
+  <div style="background:${STUDENT_VIEW?"#f0fdf8":"#f0f4f8"};padding-bottom:32px">
+    <div style="background:${GradeHdr(d.level)};padding:24px 18px 20px;color:white;position:relative;overflow:hidden;transition:background 0.5s">
+      <div style="position:absolute;top:-30px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05)"></div>
+      <div style="position:absolute;bottom:-30px;right:40px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,0.04)"></div>
+      <div style="font-size:9.5px;opacity:0.6;letter-spacing:1.2px;font-weight:700;text-transform:uppercase;margin-bottom:8px">🏫 ${schoolName||'루멘수학'} · ONE REPORT</div>
+      <div style="font-size:22px;font-weight:900;letter-spacing:-0.3px;line-height:1.1">${d.name}</div>
+      <div style="font-size:12px;opacity:0.7;margin-top:3px;font-weight:500">학습 리포트 · ${d.grade}</div>
+      <div style="display:flex;gap:7px;align-items:center;margin-top:10px;flex-wrap:wrap">
+        <div style="background:rgba(255,255,255,0.25);border:1.5px solid rgba(255,255,255,0.5);border-radius:20px;padding:5px 13px;font-size:12px;font-weight:800;color:white;text-shadow:0 1px 3px rgba(0,0,0,0.3)">📅 ${d.date}</div>
+        ${d.testType==='weekly'?`<div style="background:rgba(59,184,255,0.25);border:1px solid rgba(59,184,255,0.3);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700">🌐 전국주간테스트</div>`:`<div style="background:rgba(16,185,129,0.25);border:1px solid rgba(16,185,129,0.3);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700">📝 일일테스트</div>`}
+      </div>
+      ${d.bookname?`<div style="font-size:11px;opacity:0.65;margin-top:7px;font-weight:500">📖 ${d.bookname}</div>`:''}
+    </div>
+    <div style="padding:0 13px;max-width:480px;margin:0 auto">
+      ${d.comment?`<div style="background:linear-gradient(135deg,#0d2240 0%,#1a3564 100%);border-radius:16px;padding:16px 18px;margin-top:12px;color:white;box-shadow:0 4px 16px rgba(13,34,64,0.2)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><div style="width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px">💬</div><span style="font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;opacity:0.75">${STUDENT_VIEW?'선생님 피드백':'선생님 총평'}</span></div><div style="font-size:12px;line-height:1.9;opacity:0.95;white-space:pre-wrap;border-top:1px solid rgba(255,255,255,0.12);padding-top:8px">${d.comment}</div></div>`:''}
+      ${growthH}
+      <div style="background:white;border-radius:14px;padding:14px;margin-top:12px;border:1px solid #e8eef8">
+        <div style="font-size:12px;font-weight:700;color:#0369a1;margin-bottom:12px">📊 종합 성적</div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <svg width="90" height="90" viewBox="0 0 90 90">
+            <circle cx="45" cy="45" r="38" fill="none" stroke="#e2e8f0" stroke-width="8"/>
+            <circle cx="45" cy="45" r="38" fill="none" stroke="#0ea5e9" stroke-width="8"
+              stroke-dasharray="${(sv/100)*(2*Math.PI*38)} ${2*Math.PI*38}"
+              stroke-dashoffset="${(sv/100)*(2*Math.PI*38)}"
+              stroke-linecap="round" transform="rotate(-90 45 45)"
+              style="animation:circleAnim${sv} 1.2s cubic-bezier(0.4,0,0.2,1) forwards"/>
+            <style>@keyframes circleAnim${sv}{from{stroke-dashoffset:${(sv/100)*(2*Math.PI*38)};opacity:0.3}to{stroke-dashoffset:0;opacity:1}}</style>
+            <text x="45" y="41" text-anchor="middle" fill="#0ea5e9" font-size="18" font-weight="700" font-family="sans-serif">${sv}</text>
+            <text x="45" y="56" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="sans-serif">점</text>
+          </svg>
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+            <div style="background:#f8fafc;border-radius:9px;padding:7px 11px"><div style="font-size:10px;color:#94a3b8">등급</div><div style="font-size:22px;font-weight:700;color:${GC(d.level)}">${d.level||'-'}<span style="font-size:12px;font-weight:500">등급</span></div></div>
+            ${(d.rank&&d.total)&&(STUDENT_VIEW?(Number(d.level)<=2):(d.showRank!==false))?`<div style="background:#f8fafc;border-radius:9px;padding:7px 11px"><div style="font-size:10px;color:#94a3b8">전국 등수</div><div style="font-size:14px;font-weight:700;color:#334155"><span style="color:#0ea5e9">${d.rank}</span><span style="font-size:10px;color:#94a3b8;font-weight:400">등/${d.total}명</span></div><div style="height:5px;background:#e2e8f0;border-radius:99px;margin-top:3px;overflow:hidden"><div style="height:100%;width:${100-rp}%;background:#0ea5e9;border-radius:99px"></div></div><div style="font-size:9px;color:#94a3b8">상위 ${rp}%</div></div>`:''}
+          </div>
+        </div>
+        ${d.avgScore?`<div style="margin-top:10px;background:#f0f9ff;border-radius:9px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:#64748b">전국 평균 대비</span><span style="font-size:13px;font-weight:700;color:${Number(d.score)>=Number(d.avgScore)?'#16a34a':'#ef4444'}">${Number(d.score)>=Number(d.avgScore)?'▲':'▼'} ${Math.round(Math.abs(Number(d.score)-Number(d.avgScore)))}점</span></div>`:''}
+      ${d.targetScore?`<div style="margin-top:8px;background:linear-gradient(135deg,#fdf4ff,#f5f3ff);border-radius:9px;padding:10px 12px;border:1px solid #e9d5ff">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+          <span style="font-size:11px;color:#7c3aed;font-weight:700">🎯 목표 달성률</span>
+          <span style="font-size:12px;font-weight:800;color:${Number(d.score)>=Number(d.targetScore)?'#059669':'#7c3aed'}">${Number(d.score)>=Number(d.targetScore)?'✅ 목표 달성!':'목표 '+d.targetScore+'점 · 앞으로 '+(Number(d.targetScore)-Number(d.score))+'점'}</span>
+        </div>
+        <div style="height:7px;background:#ede9fe;border-radius:99px;overflow:hidden">
+          <div style="height:100%;width:${Math.min(100,Math.round((Number(d.score)/Number(d.targetScore))*100))}%;background:${Number(d.score)>=Number(d.targetScore)?'#059669':'#7c3aed'};border-radius:99px"></div>
+        </div>
+        <div style="font-size:10px;color:#7c3aed;font-weight:700;margin-top:3px;text-align:right">${Math.min(100,Math.round((Number(d.score)/Number(d.targetScore))*100))}%</div>
+      </div>`:''}
+      </div>`;
+
+  if(units.some(u=>u&&u.name)){
+    h+=`<div style="background:white;border-radius:14px;padding:14px;margin-top:10px;border:1px solid #e8eef8"><div style="font-size:12px;font-weight:700;color:#0369a1;margin-bottom:12px">📚 단원별 정답률</div>`;
+    units.filter(u=>u&&u.name).forEach(u=>{h+=`<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;font-weight:600;color:#334155">${u.name}</span><span style="font-size:12px;font-weight:700;color:${SC(u.student)}">${u.student}%</span></div><div style="height:8px;background:#f1f5f9;border-radius:99px;overflow:hidden;position:relative">${u.avg?`<div style="position:absolute;height:100%;width:${u.avg}%;background:#cbd5e1;border-radius:99px"></div>`:''}<div style="position:absolute;height:100%;width:${u.student}%;background:${SC(u.student)};border-radius:99px"></div></div>${u.avg?`<div style="font-size:9px;color:#94a3b8;margin-top:2px">● 학생 ◌ 전국평균 ${u.avg}%</div>`:''}</div>`;});
+    h+=`</div>`;
+  }
+  if(hs.length||hw.length){
+    h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px">
+      <div style="background:white;border-radius:14px;padding:12px;border:1px solid #d1fae5"><div style="font-size:11px;font-weight:700;color:#059669;margin-bottom:8px">✨ 우수 유형</div>${hs.map(s=>`<div style="display:flex;gap:5px;margin-bottom:7px"><div style="width:20px;height:20px;border-radius:4px;background:#ecfdf5;border:1px solid #6ee7b7;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#059669;flex-shrink:0">${s.num}</div><div><div style="font-size:10px;font-weight:600;color:#334155;line-height:1.3">${s.topic}</div><div style="font-size:9px;color:#94a3b8">${s.sub||''}</div></div></div>`).join('')}</div>
+      <div style="background:white;border-radius:14px;padding:12px;border:1px solid #fee2e2"><div style="font-size:11px;font-weight:700;color:#dc2626;margin-bottom:8px">🎯 집중 보완</div>${hw.map(w=>`<div style="display:flex;gap:5px;margin-bottom:7px"><div style="width:20px;height:20px;border-radius:4px;background:#fff1f2;border:1px solid #fca5a5;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#dc2626;flex-shrink:0">${w.num}</div><div><div style="font-size:10px;font-weight:600;color:#334155;line-height:1.3">${w.topic}</div><div style="font-size:9px;color:#94a3b8">${w.sub||''}</div></div></div>`).join('')}</div>
+    </div>`;
+  }
+  if(behaviors.some(b=>b&&b.score)){
+    const bv2=behaviors.filter(b=>b&&b.score);
+    if(bv2.length>=3){
+      const N2=bv2.length,CX2=110,CY2=95,R2=65;
+      const angles2=bv2.map((_,i)=>(Math.PI*2*i/N2)-Math.PI/2);
+      const pt2=(r,i)=>({x:CX2+r*Math.cos(angles2[i]),y:CY2+r*Math.sin(angles2[i])});
+      const grid2=[0.25,0.5,0.75,1].map((lv,gi)=>{
+        const pts2=bv2.map((_,i)=>{const p=pt2(R2*lv,i);return`${p.x},${p.y}`;}).join(' ');
+        return`<polygon points="${pts2}" fill="${gi===3?'none':'rgba(30,58,110,0.03)'}" stroke="rgba(30,58,110,${gi===3?'0.15':'0.08'})" stroke-width="${gi===3?'1.5':'1'}"/>`;
+      }).join('');
+      const axes2=bv2.map((_,i)=>{const p=pt2(R2,i);return`<line x1="${CX2}" y1="${CY2}" x2="${p.x}" y2="${p.y}" stroke="rgba(30,58,110,0.1)" stroke-width="1"/>`;}).join('');
+      const data2=bv2.map((b,i)=>{const p=pt2(R2*(Number(b.score)||0)/100,i);return`${p.x},${p.y}`;}).join(' ');
+      const labels2=bv2.map((b,i)=>{
+        const lp=pt2(R2+19,i);
+        const anc=Math.cos(angles2[i])>0.1?'start':Math.cos(angles2[i])<-0.1?'end':'middle';
+        const col=GC(b.grade);
+        return`<text x="${lp.x}" y="${lp.y+3}" text-anchor="${anc}" font-size="9.5" font-weight="700" fill="#334155" font-family="'Noto Sans KR',sans-serif">${b.name}</text>`
+          +`<text x="${lp.x}" y="${lp.y+14}" text-anchor="${anc}" font-size="9" font-weight="700" fill="${col}" font-family="sans-serif">${b.score}%</text>`;
+      }).join('');
+      const dots2=bv2.map((b,i)=>{const p=pt2(R2*(Number(b.score)||0)/100,i);return`<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="#1d6fe8" stroke="white" stroke-width="1.5"/>`;}).join('');
+      h+=`<div style="background:white;border-radius:16px;padding:14px;margin-top:10px;border:1px solid #e8eef8">
+        <div style="font-size:11px;font-weight:800;color:#0d2240;margin-bottom:12px;letter-spacing:0.5px;text-transform:uppercase">🧠 역량별 분석</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <svg width="220" height="190" viewBox="0 0 220 190" style="flex-shrink:0;display:block">
+            ${grid2}${axes2}
+            <polygon points="${data2}" fill="rgba(29,111,232,0.12)" stroke="#1d6fe8" stroke-width="2" stroke-linejoin="round"/>
+            ${labels2}${dots2}
+          </svg>
+          <div style="flex:1;min-width:90px;display:flex;flex-direction:column;gap:6px">
+            ${bv2.map(b=>{const col=GC(b.grade);return`<div style="display:flex;align-items:center;gap:6px"><div style="width:7px;height:7px;border-radius:50%;background:${col};flex-shrink:0"></div><span style="font-size:11px;color:#475569;flex:1">${b.name}</span><span style="font-size:11px;font-weight:800;color:${col}">${b.score}%</span>${b.grade?`<span style="font-size:9px;font-weight:700;background:${col}18;color:${col};padding:1px 6px;border-radius:20px">${b.grade}등</span>`:''}</div>`;}).join('')}
+          </div>
+        </div>
+      </div>`;
+    } else {
+      h+=`<div style="background:white;border-radius:14px;padding:14px;margin-top:10px;border:1px solid #e8eef8"><div style="font-size:11px;font-weight:800;color:#0d2240;margin-bottom:11px;letter-spacing:0.5px;text-transform:uppercase">🧠 역량별 분석</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">`;
+      behaviors.filter(b=>b&&b.score).forEach(b=>{h+=`<div style="background:#f8fafc;border-radius:10px;padding:10px"><span style="font-size:11px;font-weight:700;color:#334155">${b.name||''}</span><div style="height:6px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:5px 0"><div style="height:100%;width:${b.score}%;background:${GC(b.grade)};border-radius:99px"></div></div><div style="font-size:12px;font-weight:700;color:${GC(b.grade)}">${b.score}%</div></div>`;});
+      h+=`</div></div>`;
+    }
+  }
+  if(items.some(it=>it&&it.name)){
+    const namedItems=items.filter(it=>it&&it.name);
+    const correctI=namedItems.filter(it=>it.correct);
+    const wrongI=namedItems.filter(it=>!it.correct);
+    const accId2='pv_acc_'+(Date.now()%99999);
+    const itemRowPv=it=>{const col=SC(it.score);return`<div style="display:flex;align-items:center;gap:7px;padding:7px 12px;border-bottom:1px solid #f8fafc"><div style="width:26px;height:26px;border-radius:7px;background:${it.correct?'#ecfdf5':'#fff1f2'};border:1px solid ${it.correct?'#6ee7b7':'#fca5a5'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:${it.correct?'#059669':'#dc2626'};flex-shrink:0">${it.n}</div><div style="flex:1;font-size:11px;color:#475569;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${it.name}</div><div style="width:50px;height:5px;background:#f1f5f9;border-radius:99px;flex-shrink:0;overflow:hidden"><div style="height:100%;width:${it.score||0}%;background:${col};border-radius:99px"></div></div><span style="font-size:10px;font-weight:700;color:${col};min-width:26px;text-align:right">${it.score}%</span></div>`;};
+    h+=`<div style="background:white;border-radius:16px;margin-top:10px;border:1px solid #e8eef8;overflow:hidden">
+      <div style="padding:13px 14px 10px;border-bottom:1px solid #f1f5f9">
+        <div style="font-size:11px;font-weight:800;color:#0d2240;letter-spacing:0.5px;text-transform:uppercase">📝 문항별 상세 결과</div>
+        <div style="display:flex;gap:7px;margin-top:8px">
+          <div style="display:flex;align-items:center;gap:5px;background:#ecfdf5;border-radius:8px;padding:4px 10px"><span style="font-size:12px">✅</span><span style="font-size:11px;font-weight:700;color:#059669">정답 ${correctI.length}문항</span></div>
+          <div style="display:flex;align-items:center;gap:5px;background:#fff1f2;border-radius:8px;padding:4px 10px"><span style="font-size:12px">❌</span><span style="font-size:11px;font-weight:700;color:#dc2626">오답 ${wrongI.length}문항</span></div>
+        </div>
+        <div style="font-size:10px;color:#94a3b8;margin-top:6px;display:flex;align-items:center;gap:3px">👆 항목을 누르면 문항을 자세히 볼 수 있어요</div>
+      </div>
+      ${wrongI.length?`<div>
+        <button onclick="(function(){var el=document.getElementById('wpv_${accId2}');var btn=document.getElementById('wbpv_${accId2}');el.style.display=el.style.display==='none'?'block':'none';btn.textContent=el.style.display==='none'?'▼':'▲';})()" style="width:100%;padding:9px 14px;background:#fff8f8;border:none;border-bottom:1px solid #fee2e2;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:inherit">
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:12px">❌</span><span style="font-size:11px;font-weight:700;color:#dc2626">집중 보완 (${wrongI.length}개)</span></div>
+          <div style="display:flex;align-items:center;gap:4px"><span style="font-size:10px;color:#dc2626;opacity:0.7">👆 눌러서 접기</span><span id="wbpv_${accId2}" style="font-size:10px;color:#dc2626;font-weight:700">▲</span></div>
+        </button>
+        <div id="wpv_${accId2}">${wrongI.map(itemRowPv).join('')}</div>
+      </div>`:''}
+      ${correctI.length?`<div>
+        <button onclick="(function(){var el=document.getElementById('cpv_${accId2}');var btn=document.getElementById('cbpv_${accId2}');el.style.display=el.style.display==='none'?'block':'none';btn.textContent=el.style.display==='none'?'▼':'▲';})()" style="width:100%;padding:9px 14px;background:#f8fffe;border:none;border-bottom:1px solid #f1f5f9;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:inherit">
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:12px">✅</span><span style="font-size:11px;font-weight:700;color:#059669">정답 문항 (${correctI.length}개)</span></div>
+          <div style="display:flex;align-items:center;gap:4px"><span style="font-size:10px;color:#059669;opacity:0.7">👆 눌러서 펼치기</span><span id="cbpv_${accId2}" style="font-size:10px;color:#059669;font-weight:700">▼</span></div>
+        </button>
+        <div id="cpv_${accId2}" style="display:none">${correctI.map(itemRowPv).join('')}</div>
+      </div>`:''}
+    </div>`;
+  }
+
+  // 숙제 완성도 미리보기
+  if(d.homework?.show&&(d.homework?.rows||[]).length){
+    const hwr=d.homework.rows;
+    const summary={};hwr.forEach(r=>{if(r.stage!=='없음')summary[r.stage]=(summary[r.stage]||0)+1;});
+    h+=`<div style="background:white;border-radius:14px;padding:14px;margin-top:10px;border:1px solid #e8eef8">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:11px;font-weight:800;color:#0d2240;letter-spacing:0.5px;text-transform:uppercase">📓 숙제 완성도</div>
+        <div style="display:flex;gap:5px">
+          ${(()=>{
+            const allSame=list.filter(r=>r.name===d.name&&r.grade===d.grade);
+            const allHw=allSame.flatMap(r=>(r.homework?.rows||[]).filter(rw=>rw.stage!=='없음'));
+            if(allHw.length<2)return'';
+            const weeks=allHw.slice(-8);
+            const stageColors={'풀이':'#3b82f6','채점':'#f59e0b','오답':'#22c55e','아하노트':'#a855f7'};
+            return weeks.map(rw=>{
+              const col=stageColors[rw.stage]||'#e2e8f0';
+              const op=Math.max(0.3,(rw.pct||0)/100);
+              return '<div title="'+rw.date+' '+rw.stage+' '+rw.pct+'%" style="width:20px;height:20px;border-radius:5px;background:'+col+';opacity:'+op+';cursor:default"></div>';
+            }).join('');
+          })()}
+        </div>
+      </div>`;
+    if(Object.keys(summary).length){
+      h+=`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">`;
+      Object.entries(summary).forEach(([s,c])=>{const v=SS[s];h+=`<div style="display:flex;align-items:center;gap:4px;background:#f8fafc;border-radius:20px;padding:3px 9px;font-size:10px;color:#334155"><div style="width:7px;height:7px;border-radius:50%;background:${v.bar}"></div>${s} ${c}회</div>`;});
+      h+=`</div>`;
+    }
+    hwr.forEach(r=>{const sv=SS[r.stage]||SS['없음'];const pv=PS[r.pct]||PS[0];
+      h+=`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f8fafc"><span style="font-size:11px;color:#64748b;min-width:62px;flex-shrink:0">${r.date}</span><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:${sv.bg};color:${sv.text};flex-shrink:0">${r.stage}</span><div style="flex:1;height:8px;background:#f1f5f9;border-radius:99px;overflow:hidden"><div style="height:100%;width:${r.pct}%;background:${sv.bar};border-radius:99px"></div></div><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:${pv.bg};color:${pv.text};flex-shrink:0">${r.pct}%</span></div>`;
+    });
+    h+=`<div style="background:#f8fafc;border-radius:10px;padding:11px 12px;margin-top:11px">
+      <div style="font-size:11px;font-weight:700;color:#334155;margin-bottom:8px">📖 숙제 단계 안내</div>
+      ${Object.entries(SS).filter(([k])=>k!=='없음').map(([s,v])=>`<div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:6px"><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;background:${v.bg};color:${v.text};flex-shrink:0;margin-top:1px">${s}</span><span style="font-size:11px;color:#64748b;line-height:1.5">${HW_GUIDE[s]||''}</span></div>`).join('')}
+      <div style="font-size:10px;color:#94a3b8;margin-top:7px;padding-top:7px;border-top:1px solid #e2e8f0;line-height:1.7">💡 완성도: 0% 시작 전 · 30% 진행 중 · 60% 절반 이상 · 100% 완전 완료 ✅</div>
+    </div></div>`;
+  }
+
+  h+=`<div style="text-align:center;margin-top:13px;font-size:10px;color:#94a3b8">🏫 ${schoolName||'루멘수학'} · Lumen Math Academy</div></div></div>`;
+  return h;
+}
+
+
+function copyKakaoMsg(){
+  const d=form;
+  if(!d.name){alert('학생 정보를 먼저 입력해주세요');return;}
+  const sn=schoolName||'루멘수학';
+  const tn=teacherName?teacherName:'선생님';
+  const testLabel=d.testType==='weekly'?'전국주간테스트':'수업 테스트';
+  const strong=(d.strong||[]).filter(s=>s.topic).map(s=>s.topic).slice(0,2).join(', ')||'-';
+  const weak=(d.weak||[]).filter(w=>w.topic).map(w=>w.topic).slice(0,2).join(', ')||'-';
+  const hwRows=(d.homework?.rows||[]).filter(r=>r.stage!=='없음');
+  const hwLast=hwRows.length?hwRows[hwRows.length-1]:null;
+  const rankLine=(d.rank&&d.total&&d.showRank)?`\n📊 전국 등수: ${d.rank}등 / ${d.total}명 (상위 ${Math.round((Number(d.rank)/Number(d.total))*100)}%)`:'';
+  const hwLine=hwLast?`\n📓 최근 숙제: ${hwLast.date} ${hwLast.stage} ${hwLast.pct}% 완성`:'';
+  const commentLine=d.comment?`\n\n💬 ${tn} 코멘트\n${d.comment.slice(0,120)}${d.comment.length>120?'..':''}`:'' ;
+  const msg=`안녕하세요, ${sn} ${tn}입니다 😊\n${d.name} 학생 학습 리포트를 보내드립니다.\n\n📅 ${d.date} · ${testLabel}\n📚 ${d.bookname||''}\n\n✏️ 점수: ${d.score||'-'}점  |  등급: ${d.level||'-'}등급${rankLine}\n\n✨ 우수 유형: ${strong}\n🎯 집중 보완: ${weak}${hwLine}${commentLine}\n\n📱 상세 리포트 파일을 함께 첨부해 드렸습니다.\n확인 후 문의사항 있으시면 편하게 연락 주세요 🙏`.trim();
+  navigator.clipboard.writeText(msg).then(()=>{
+    const btn=document.getElementById('kakao-copy-btn');
+    if(btn){btn.textContent='✅ 복사됨!';btn.style.background='linear-gradient(135deg,#059669,#10b981)';setTimeout(()=>{btn.textContent='💬 카카오톡 메시지 복사';btn.style.background='linear-gradient(135deg,#f9a825,#f57f17)';},2200);}
+  }).catch(()=>{
+    // clipboard API 안되면 직접 보여주기
+    const ta=document.createElement('textarea');ta.value=msg;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    alert('클립보드에 복사됐습니다!\n카카오톡에 붙여넣기 하세요.');
+  });
+}
+
+function rShare(){
+  if(STUDENT_VIEW)return`<div style="padding:40px 20px;text-align:center;color:#94a3b8"><div style="font-size:36px;margin-bottom:10px">🔒</div><div style="font-size:14px;font-weight:700;color:#334155;margin-bottom:5px">학생 보기 모드에서는 공유 탭이 비활성화됩니다</div><button style="margin-top:12px;padding:9px 20px;background:#1d6fe8;color:white;border:none;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:700" onclick="STUDENT_VIEW=false;render()">학부모 모드로 전환</button></div>`;
+  const d=form;
+  if(!d.name)return`<div style="padding:40px 20px;text-align:center;color:#94a3b8"><div style="font-size:36px;margin-bottom:10px">📤</div><div style="font-size:14px;font-weight:700;color:#334155;margin-bottom:5px">공유할 리포트가 없어요</div><button style="margin-top:10px;padding:9px 20px;background:#0ea5e9;color:white;border:none;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit" onclick="go('list')">목록으로</button></div>`;
+  return`<div style="padding:14px">
+    <div style="background:#f8fafc;border-radius:16px;padding:14px;margin-bottom:14px;border:1.5px solid #e8edf5">
+      <div style="font-size:11px;font-weight:800;color:#0d2240;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px">📥 리포트 다운로드</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button onclick="downloadReport()" style="width:100%;padding:13px 16px;background:linear-gradient(135deg,#059669,#10b981);color:white;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:10px;box-shadow:0 3px 12px rgba(5,150,105,0.28);letter-spacing:0.1px">
+          <span style="font-size:22px">👨‍👩‍👧</span>
+          <div style="text-align:left"><div style="font-size:13px;font-weight:800">[학부모용] ${d.name} 리포트</div><div style="font-size:10px;opacity:0.9;margin-top:1px">등수 표시 · 학부모 전달용 · 파일명: [학부모용]_이름_날짜</div></div>
+        </button>
+        <button onclick="downloadStudentReport()" style="width:100%;padding:13px 16px;background:linear-gradient(135deg,#1d6fe8,#3b84f7);color:white;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:10px;box-shadow:0 3px 12px rgba(29,111,232,0.28);letter-spacing:0.1px">
+          <span style="font-size:22px">👨‍🎓</span>
+          <div style="text-align:left"><div style="font-size:13px;font-weight:800">[학생용] ${d.name} 리포트</div><div style="font-size:10px;opacity:0.9;margin-top:1px">3등급↓ 등수 자동 숨김 · 수업 중 보여주기용 · 파일명: [학생용]_이름_날짜</div></div>
+        </button>
+      </div>
+    </div>
+    <button id="kakao-copy-btn" onclick="copyKakaoMsg()" style="width:100%;padding:14px;background:linear-gradient(135deg,#f9a825,#f57f17);color:white;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:12px;margin-bottom:14px;box-shadow:0 4px 16px rgba(249,168,37,0.35);letter-spacing:0.1px;transition:all 0.2s">
+      <span style="font-size:24px">💬</span>
+      <div style="text-align:left"><div style="font-size:14px;font-weight:800">카카오톡 메시지 복사</div><div style="font-size:11px;opacity:0.9;margin-top:2px">학습 요약 문자 → 카카오톡에 붙여넣기</div></div>
+    </button>
+    <div style="background:white;border-radius:16px;padding:16px;margin-bottom:14px;border:1.5px solid #e8edf5;box-shadow:0 2px 8px rgba(13,34,64,0.05)">
+      <div style="font-size:13px;font-weight:800;color:#0d2240;margin-bottom:14px;letter-spacing:-0.2px">📱 학부모 공유 방법</div>
+      ${[['1','#e0f2fe','#0369a1','위 버튼 클릭 → 브라우저 다운로드 폴더에 HTML 파일 저장'],['2','#fef9c3','#92400e','카카오톡 채팅 → 파일 첨부(📎) → 다운로드 폴더에서 파일 선택'],['3','#f0fdf4','#059669','학부모가 파일 탭 → 브라우저로 열기 → 리포트 바로 확인 ✅']].map(([n,bg,tc,desc])=>`<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px"><div style="width:28px;height:28px;border-radius:8px;background:${bg};color:${tc};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0">${n}</div><div style="font-size:12px;color:#334155;line-height:1.6;padding-top:3px">${desc}</div></div>`).join('')}
+    </div>
+    <div style="background:#eff6ff;border-radius:12px;padding:12px 14px;font-size:11px;color:#1d4ed8;line-height:1.9;border-left:3px solid #3b84f7">
+      📄 파일명: <strong>${schoolName||'루멘수학'}_${d.name}_리포트_${d.date}.html</strong><br>
+      📱 iOS: 파일 앱에서 열기 → Safari로 확인<br>
+      🤖 Android: 다운로드 후 Chrome으로 열기<br>
+      💡 인터넷 없이도 열립니다
+    </div>
+  </div>`;
+}
+
+function rSettings(){
+  return`<div style="padding:14px">
+    <div style="margin-bottom:18px">
+      <div class="st">✨ AI 피드백 프롬프트</div>
+      <div style="background:#f5f3ff;border-radius:var(--r);padding:11px 13px;margin-bottom:10px;font-size:11px;color:#6d28d9;line-height:1.8;border-left:3px solid #7c3aed">
+        💡 제미나이 젬에서 쓰던 프롬프트를 붙여넣거나 자유롭게 수정하세요.<br>
+        <span style="color:#94a3b8">{name} {grade} {score} {level} {strong} {weak} {behaviors} → 학생 데이터로 자동 치환</span>
+      </div>
+      <div class="f"><label>피드백 생성 프롬프트</label><textarea id="pt" style="min-height:220px;font-size:11px;line-height:1.7;font-family:monospace" oninput="promptText=this.value">${promptText.replace(/</g,'&lt;')}</textarea></div>
+      <div style="display:flex;gap:8px">
+        <button onclick="savePrompt()" style="flex:1;padding:11px;background:#7c3aed;color:white;border:none;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">${promptSaved?'✓ 저장됨!':'💾 프롬프트 저장'}</button>
+        <button onclick="resetPrompt()" style="padding:11px 14px;background:#f8fafc;color:#64748b;border:1px solid var(--border);border-radius:var(--r);font-size:13px;cursor:pointer;font-family:inherit">초기화</button>
+      </div>
+    </div>
+    <div style="margin-bottom:18px">
+      <div class="st" style="color:#0d2240">🔑 API 키 설정</div>
+      <div class="ibox">PDF 자동 분석 · AI 피드백 생성에 필요합니다.<br><a href="https://console.anthropic.com" target="_blank" style="color:#0369a1;font-weight:700">console.anthropic.com</a>에서 무료 발급 가능</div>
+      <div class="f"><label>Anthropic API 키</label><input id="api-setting" type="password" value="${apiKey}" placeholder="sk-ant-api03-..." oninput="apiKey=this.value"></div>
+      <button onclick="apiKey=document.getElementById('api-setting').value;localStorage.setItem('or_api_key',apiKey);renderApiBanner();alert('API 키가 저장됐습니다!')" style="width:100%;padding:12px;background:linear-gradient(135deg,#0d2240,#1d6fe8);color:white;border:none;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0.2px">🔑 API 키 저장</button>
+    </div>
+    <div>
+      <div class="st" style="color:#0d2240">🏫 학원 정보</div>
+      <div class="f"><label>학원명</label><input id="sn" value="${schoolName}" placeholder="루멘수학"></div>
+      <div class="f"><label>선생님 이름 (선택)</label><input id="tn" value="${teacherName}" placeholder="홍길동 선생님"></div>
+      <button onclick="saveSchool()" style="width:100%;padding:12px;background:#0d2240;color:white;border:none;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0.2px">저장</button>
+    </div>
+
+    <div style="margin-top:18px">
+      <div class="st" style="color:#0d2240">👥 반(그룹) 관리</div>
+      <div class="ibox">쉼표(,)로 구분해서 입력하세요. 입력 탭에서 버튼으로 바로 선택할 수 있어요.</div>
+      <div class="f">
+        <label>반 목록</label>
+        <input id="group-input" value="${groupList.join(', ')}" placeholder="월수금반, 화목토반, 화목반">
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+        ${groupList.map(g=>`<span style="padding:5px 13px;border-radius:20px;background:#eff6ff;color:#1d6fe8;font-size:12px;font-weight:700;border:1.5px solid #bfdbfe">${g}</span>`).join('')}
+      </div>
+      <button onclick="saveGroups()" style="width:100%;padding:11px;background:linear-gradient(135deg,#1d6fe8,#3b84f7);color:white;border:none;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">저장</button>
+    </div>
+
+    <!-- 데이터 백업/복원 -->
+    <div style="margin-top:18px">
+      <div class="st" style="color:#0d2240">💾 데이터 백업 / 복원</div>
+      <div class="ibox">브라우저 초기화나 기기 변경 시 데이터가 사라질 수 있어요. 정기적으로 백업해두세요.</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <button onclick="exportData()" style="flex:1;padding:11px;background:linear-gradient(135deg,#0d2240,#1d6fe8);color:white;border:none;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">📤 백업 저장</button>
+        <label style="flex:1;padding:11px;background:#f8fafc;color:#475569;border:1.5px solid #e2e8f0;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:5px">
+          📥 복원 불러오기
+          <input type="file" accept=".json" style="display:none" onchange="importData(this)">
+        </label>
+      </div>
+      <div style="font-size:10px;color:#94a3b8;line-height:1.7">📌 파일명: 루멘수학_백업_날짜.json · 병합 또는 덮어쓰기 선택 가능</div>
+    </div>
+
+    <!-- 월간 리포트 -->
+    <div style="margin-top:18px;margin-bottom:8px">
+      <div class="st" style="color:#0d2240">📅 월간 리포트 생성</div>
+      <div class="ibox">특정 달의 전체 학생 요약을 한 파일로 만들어드려요.</div>
+      <div style="display:flex;gap:8px">
+        <select id="monthly-sel" style="flex:1;border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:13px;background:white;font-family:inherit;outline:none">
+          <option value="">월 선택...</option>
+          ${getAvailableMonths().map(m=>`<option value="${m}">${m.replace('.','년 ')}월</option>`).join('')}
+        </select>
+        <button onclick="downloadMonthlyReport()" style="padding:10px 16px;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;border:none;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">📊 생성</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+
+/* ── 데이터 백업/복원 ── */
+function exportData(){
+  const data={version:2,exportedAt:new Date().toISOString(),school:schoolName,teacher:teacherName,students:list};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const d=new Date();
+  a.download=`루멘수학_백업_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+  a.click();URL.revokeObjectURL(url);
+}
+function importData(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.students||!Array.isArray(data.students))throw new Error('올바른 백업 파일이 아닙니다');
+      const cnt=data.students.length;
+      if(!confirm(`백업 파일에 학생 ${cnt}명 데이터가 있습니다.\n현재 데이터와 병합하시겠습니까?\n(취소 → 덮어쓰기)`)){
+        list=data.students.map(migrateStudent);
+      }else{
+        const existIds=new Set(list.map(r=>r.id));
+        const newOnes=data.students.filter(r=>!existIds.has(r.id)).map(migrateStudent);
+        list=[...list,...newOnes];
+      }
+      if(data.school&&!schoolName){schoolName=data.school;localStorage.setItem('or_school',schoolName);}
+      saveList();render();
+      alert(`✅ 복원 완료! 총 ${list.length}건`);
+    }catch(err){alert('오류: '+err.message);}
+  };
+  reader.readAsText(file);
+}
+
+/* ── 월간 리포트 생성 ── */
+function buildMonthlyReport(yearMonth){
+  // yearMonth: "2026.03" 형식
+  const [yr,mo]=yearMonth.split('.');
+  const monthData=list.filter(r=>{
+    const d=r.date||'';
+    return d.startsWith(yr+'.'+mo)||d.startsWith(yr+'.0'+mo.replace(/^0/,''));
+  });
+  if(!monthData.length)return null;
+  const groups={};
+  monthData.forEach(r=>{
+    const k=(r.name||'이름없음')+'__'+(r.grade||'');
+    if(!groups[k])groups[k]={name:r.name||'이름없음',grade:r.grade||'',reports:[]};
+    groups[k].reports.push(r);
+  });
+  const sn=schoolName||'루멘수학';
+  const monthLabel=`${yr}년 ${Number(mo)}월`;
+  let body=`<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>${monthLabel} 월간 리포트 - ${sn}</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#f0f4f8;font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;padding:16px}
+.card{background:white;border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 2px 12px rgba(13,34,64,0.08);border:1px solid #e8eef8}
+.hdr{background:linear-gradient(135deg,#0d2240,#1d6fe8);color:white;border-radius:16px;padding:20px;margin-bottom:16px}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.bar-w{height:8px;background:#f1f5f9;border-radius:99px;overflow:hidden;margin-top:4px}
+.bar-f{height:100%;border-radius:99px}
+</style></head><body>
+<div class="hdr">
+  <div style="font-size:10px;opacity:0.6;letter-spacing:1px;font-weight:700;text-transform:uppercase;margin-bottom:8px">🏫 ${sn} · MONTHLY REPORT</div>
+  <div style="font-size:24px;font-weight:900;letter-spacing:-0.5px">${monthLabel} 월간 학습 리포트</div>
+  <div style="font-size:13px;opacity:0.7;margin-top:4px">총 ${Object.keys(groups).length}명 · ${monthData.length}회 진단</div>
+</div>`;
+
+  Object.values(groups).forEach(g=>{
+    const reps=g.reports.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+    const scores=reps.filter(r=>r.score).map(r=>Number(r.score));
+    const avgScore=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;
+    const firstScore=scores[0]||null;
+    const lastScore=scores[scores.length-1]||null;
+    const trend=firstScore&&lastScore&&scores.length>1?(lastScore-firstScore):null;
+    const trendCol=trend===null?'#94a3b8':trend>0?'#059669':trend<0?'#dc2626':'#94a3b8';
+    const trendStr=trend===null?'-':trend>0?'↑'+trend+'점':trend<0?'↓'+Math.abs(trend)+'점':'→ 변동없음';
+    const hwRows=reps.flatMap(r=>(r.homework?.rows||[]).filter(rw=>rw.stage!=='없음'));
+    const hwDone=hwRows.filter(r=>r.pct===100).length;
+    const latestLevel=reps.filter(r=>r.level).slice(-1)[0]?.level||'-';
+    const gc=n=>{const v=Number(n);if(v<=1)return'#10b981';if(v===2)return'#3b82f6';if(v===3)return'#f59e0b';if(v===4)return'#f97316';return'#ef4444';};
+    body+=`<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <div>
+          <div style="font-size:17px;font-weight:900;color:#0d2240;letter-spacing:-0.3px">${g.name}</div>
+          <div style="font-size:11px;color:#64748b;margin-top:2px">${g.grade}${g.reports[0]?.group?' · '+g.reports[0].group:''}</div>
+        </div>
+        <div style="text-align:right">
+          <span class="badge" style="background:${gc(latestLevel)}18;color:${gc(latestLevel)}">${latestLevel}등급</span>
+          <div style="font-size:11px;color:#94a3b8;margin-top:3px">${reps.length}회 진단</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
+        <div style="background:#f8fafc;border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:#94a3b8;margin-bottom:3px">평균 점수</div>
+          <div style="font-size:20px;font-weight:800;color:#1d6fe8">${avgScore||'-'}<span style="font-size:11px">점</span></div>
+        </div>
+        <div style="background:#f8fafc;border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:#94a3b8;margin-bottom:3px">성장</div>
+          <div style="font-size:18px;font-weight:800;color:${trendCol}">${trendStr}</div>
+        </div>
+        <div style="background:#f8fafc;border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:#94a3b8;margin-bottom:3px">숙제 100%</div>
+          <div style="font-size:20px;font-weight:800;color:#7c3aed">${hwRows.length?hwDone+'/'+hwRows.length:'-'}</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#475569;border-top:1px solid #f1f5f9;padding-top:10px">
+        ${reps.map(r=>`<span style="display:inline-block;background:#eff6ff;color:#1d6fe8;border-radius:8px;padding:2px 8px;font-size:10px;font-weight:700;margin:2px">${r.date} ${r.score?r.score+'점':''}</span>`).join('')}
+      </div>
+      ${reps.slice(-1)[0]?.comment?`<div style="background:linear-gradient(135deg,#0d2240,#1a3564);border-radius:12px;padding:12px 14px;margin-top:10px;color:white"><div style="font-size:9px;font-weight:800;letter-spacing:1px;opacity:0.7;margin-bottom:5px">💬 최근 총평</div><div style="font-size:12px;line-height:1.8;opacity:0.95">${reps.slice(-1)[0].comment.slice(0,150)}${reps.slice(-1)[0].comment.length>150?'...':''}</div></div>`:''}
+    </div>`;
+  });
+  body+=`<div style="text-align:center;padding:20px;font-size:11px;color:#94a3b8">🏫 ${sn} · ${monthLabel} 월간 학습 리포트</div></body></html>`;
+  return body;
+}
+
+function downloadMonthlyReport(){
+  const sel=document.getElementById('monthly-sel');
+  const ym=sel?.value;
+  if(!ym){alert('월을 선택해주세요');return;}
+  const html=buildMonthlyReport(ym);
+  if(!html){alert('해당 월의 데이터가 없습니다');return;}
+  const blob=new Blob(['\uFEFF'+html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`[월간리포트]_${ym.replace('.','년')}월_${schoolName||'루멘수학'}.html`;
+  a.click();URL.revokeObjectURL(url);
+}
+
+function getAvailableMonths(){
+  const months=new Set();
+  list.forEach(r=>{
+    const d=r.date||'';
+    const m=d.match(/^(\d{4}\.\d{2})/);
+    if(m)months.add(m[1]);
+  });
+  return [...months].sort().reverse();
+}
+
+/* ── 초기화 ── */
+renderApiBanner();
+render();
+// 창 크기 바뀔 때 재렌더
+window.addEventListener('resize',()=>render());
+// 모바일 패딩
+if(window.innerWidth<900){document.body.style.paddingBottom='60px';}
+</script>
+</body></html>
